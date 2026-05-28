@@ -421,7 +421,7 @@
 <!-- MOBILE EVENT MODAL -->
 <div class="mob-modal-overlay" id="mobModal">
   <div class="mob-modal-box" id="mobModalBox">
-    <div class="mob-modal-handle"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 4px;"><div class="mob-modal-handle" style="margin:0;"></div><button onclick="closeMobModal()" style="background:none;border:none;font-size:24px;color:var(--text2);cursor:pointer;padding:0;line-height:1;">&times;</button></div>
     <div class="mob-modal-head">
       <div class="mob-modal-prop" id="mobProp"></div>
       <div class="mob-modal-badges" id="mobBadges"></div>
@@ -785,6 +785,7 @@ function openMobModal(r) {
 }
 
 function closeMobModal(e) {
+  if (!e) { document.getElementById('mobModal').classList.remove('open'); return; }
   if (!e || e.target === document.getElementById('mobModal')) {
     document.getElementById('mobModal').classList.remove('open');
   }
