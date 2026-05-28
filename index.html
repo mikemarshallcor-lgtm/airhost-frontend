@@ -1,132 +1,845 @@
-const express = require('express');
-const cors = require('cors');
-const https = require('https');
-const http = require('http');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AIRHOST.CL — Panel de propiedades</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+  <!-- ══════════════════════════════════════════════════════════════
+       CONFIGURACIÓN — edita solo estas 3 líneas
+  ══════════════════════════════════════════════════════════════ -->
+  <script>
+    const BACKEND_URL  = 'https://airhost-backend.onrender.com';       // ← URL de Render
+    const SUPABASE_URL = 'https://hrhmkosrukuvjwiznssr.supabase.co';      // ← URL de Supabase
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyaG1rb3NydWt1dmp3aXpuc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5MjAyNTAsImV4cCI6MjA5NTQ5NjI1MH0.aw6lp1EauCeOWki9GuN85-8WxjRvoYo6IIU7ZijrbVg'; // ← anon key de Supabase
+  </script>
+  <!-- ══════════════════════════════════════════════════════════════ -->
 
-// ─── PROPIEDADES AIRHOST.CL ──────────────────────────────────────────────────
-const PROPERTIES = [
-  { id: 'p01', name: 'Roberto del Río',     ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1660927266209635218.ics?t=81f8d1e504e745dabeb5ad7da52d2953' },
-  { id: 'p02', name: 'Wood 115',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1603676872799033000.ics?t=ca3ff6da5cbc46e39be3816eca258774' },
-  { id: 'p03', name: 'Wood 407',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1579966565797271620.ics?t=f94937ca7def445d92c03224886d8afd' },
-  { id: 'p04', name: 'San Nicolás',         ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1395237881767021180.ics?t=68e56ccaf2304ccfa91ea28e7707ca04' },
-  { id: 'p05', name: 'Wood 605',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1551568857429436751.ics?t=132f1d20db5f45f39ec4734d6980de38' },
-  { id: 'p06', name: 'Wood 612',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1556918719052205568.ics?t=2c16790822ac4d1a800cd5d484bc8e99' },
-  { id: 'p07', name: 'Rodrigo de Araya 208',ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1676975188638307540.ics?t=8230891a20c9495aa316e4cc8a9a9324' },
-  { id: 'p08', name: 'Suecia 84',           ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1444475412341586605.ics?t=7e79df6e2b024154a115b06e33a8f155' },
-  { id: 'p09', name: 'Manuel Montt',        ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1444390933874579412.ics?t=868a8d700e334e59a76840117670b5ee' },
-  { id: 'p10', name: 'Toesca 210',          ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1584854189095603273.ics?t=599637a0b8564920abaaf3e24414978c' },
-  { id: 'p11', name: 'Román Díaz 503',      ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1567621412491263472.ics?t=599f8176a8a54083b47281b9bcd28b1e' },
-  { id: 'p12', name: 'Wood 604',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1608048699648552722.ics?t=f42d5d3348ee43fcbb19b9af5e0bb494' },
-  { id: 'p13', name: 'Domeyko 709',         ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1601841227199043734.ics?t=c94bc6e3bf1e4406b8b14424f37d8cd9' },
-  { id: 'p14', name: 'Toesca 301',          ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1618157734613492564.ics?t=1b201829068548e197b77549a87d49d3' },
-  { id: 'p15', name: 'Wood 611',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1671347359335600906.ics?t=5f35313c4de242028a4b26f6004659ab' },
-  { id: 'p16', name: 'Toesca 905 (2)',      ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1689656011043659207.ics?t=a58ecc5a53844f11b6cf2990fb8bf8fb' },
-  { id: 'p17', name: 'Wood 617',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1671334041563600485.ics?t=02c8cb9760234132aab8e7f5ac810996' },
-  { id: 'p18', name: 'Wood 606',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1499364384918693470.ics?t=363c9853c55048ab8774411dc5613325' },
-  { id: 'p19', name: 'Toesca 502',          ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1621078116267866476.ics?t=94cf75aa93124e9db2fdd4e4c0734632' },
-  { id: 'p20', name: 'Coquimbo 1509',       ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1675771733696707714.ics?t=867c3344474a4a6bbfd7bb0219d54fec' },
-  { id: 'p21', name: 'Wood 603',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1593416270404357446.ics?t=c99c47a8e4004335b2586ca0ec576564' },
-  { id: 'p22', name: 'Tocornal 515',        ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1668920172453073232.ics?t=d1ed46063cf44d7b8700d8fef6ac70f8' },
-  { id: 'p23', name: 'Tocornal 804',        ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1675042038393493038.ics?t=da319f66a7874ed880628d459aa77c15' },
-  { id: 'p24', name: 'Depto La Marina',     ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/863226848158421849.ics?t=6693a29cc34a4160a8ebeab13d77d686' },
-  { id: 'p25', name: 'Macul Siria',         ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1615250091153848056.ics?t=48e4fd5cd91048369e92e8b06792ffcf' },
-  { id: 'p26', name: 'Huérfanos',           ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1470672598371056407.ics?t=f3bbe070f3d947af80e74ad2eaf04c84' },
-  { id: 'p27', name: 'Domeyko 604',         ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1601044096640674561.ics?t=7969f7cb4ff74f638e42b720204d058d' },
-  { id: 'p28', name: 'Wood 516',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1593606119943992491.ics?t=66fd3d38685544df8437e8116bc97a48' },
-  { id: 'p29', name: 'Wood 412',            ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1554490574857494468.ics?t=371fc95554cf4b17b4f407e625befc1b' },
-  { id: 'p30', name: 'Toesca 310',          ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1541475228236772039.ics?t=0d07d29e9b524b5d8474701d01d0e7c5' },
-  { id: 'p31', name: 'Sta. Elvira 97',      ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1626991587206641280.ics?t=b2a0d4e50fae4c81a3f4f63a03255b46' },
-  { id: 'p32', name: 'Toesca 905',          ota: 'airbnb',  icalUrl: 'https://www.airbnb.cl/calendar/ical/1621081348833059647.ics?t=7e53e43ed8334b9f9302d8c6522b98ed' },
-  { id: 'p33', name: 'Toesca 905 BK',       ota: 'booking', icalUrl: 'https://ical.booking.com/v1/export?t=62f63d9d-d684-4f9f-93b9-50e015343c7e' },
-  { id: 'p34', name: 'Tocornal 804 BK',     ota: 'booking', icalUrl: 'https://ical.booking.com/v1/export?t=7c8e6d46-24fc-4c46-a0e3-b0dbe092726f' },
-  { id: 'p35', name: 'Wood 603 BK',         ota: 'booking', icalUrl: 'https://ical.booking.com/v1/export?t=605c8659-7b50-466b-aec5-b6b79dee6c60' },
-  { id: 'p36', name: 'Wood 617 BK',         ota: 'booking', icalUrl: 'https://ical.booking.com/v1/export?t=4cf67ebc-4f87-4300-8dcc-a11a538d183a' },
-];
-// ────────────────────────────────────────────────────────────────────────────
-
-function fetchUrl(url) {
-  return new Promise((resolve, reject) => {
-    const client = url.startsWith('https') ? https : http;
-    client.get(url, (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve(data));
-    }).on('error', reject);
-  });
-}
-
-function parseIcal(icsText, prop) {
-  const events = [];
-  const blocks = icsText.split('BEGIN:VEVENT');
-  blocks.slice(1).forEach(block => {
-    const get = (key) => {
-      const match = block.match(new RegExp(key + '[^:]*:([^\\r\\n]+)'));
-      return match ? match[1].trim() : '';
-    };
-    const dtstart = get('DTSTART');
-    const dtend   = get('DTEND');
-    const summary = get('SUMMARY');
-    const uid     = get('UID');
-    if (!dtstart || !dtend) return;
-    const sum = summary.toLowerCase();
-    if (sum.includes('not available') || (sum.includes('airbnb') && !sum.includes('reserved') && !sum.includes('reservation'))) return;
-    const parseDate = (d) => {
-      if (d.length === 8) return new Date(parseInt(d.slice(0,4)), parseInt(d.slice(4,6))-1, parseInt(d.slice(6,8)));
-      return new Date(d.replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5:$6'));
-    };
-    const checkin  = parseDate(dtstart);
-    const checkout = parseDate(dtend);
-    const nights   = Math.round((checkout - checkin) / (1000*60*60*24));
-    if (nights < 1) return;
-    let guest = summary;
-    if (!guest || guest.length < 2) guest = 'Huésped';
-    events.push({
-      id: uid || `${prop.id}_${dtstart}`,
-      propId: prop.id,
-      propName: prop.name,
-      ota: prop.ota,
-      guest,
-      checkin:  checkin.toISOString().slice(0,10),
-      checkout: checkout.toISOString().slice(0,10),
-      nights,
-    });
-  });
-  return events;
-}
-
-let cache = { data: null, ts: 0 };
-const CACHE_TTL = 5 * 60 * 1000;
-
-async function getAllReservations() {
-  if (cache.data && Date.now() - cache.ts < CACHE_TTL) return cache.data;
-  const all = [];
-  for (const prop of PROPERTIES) {
-    try {
-      const ics    = await fetchUrl(prop.icalUrl);
-      const events = parseIcal(ics, prop);
-      all.push(...events);
-    } catch (e) {
-      console.error(`Error fetching ${prop.name}:`, e.message);
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #1D9E75; --teal-l: #E1F5EE; --teal-d: #0F6E56;
+      --amber: #BA7517; --amber-l: #FAEEDA;
+      --coral: #D85A30; --coral-l: #FAECE7;
+      --blue: #378ADD; --blue-l: #E6F1FB;
+      --red-ab: #E8484C; --red-ab-l: #FDEAEA;
+      --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeede9;
+      --text: #1a1a18; --text2: #6b6b66; --text3: #a8a8a3;
+      --border: rgba(0,0,0,0.1); --border2: rgba(0,0,0,0.18);
+      --radius: 8px; --radius-lg: 12px;
+      --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
     }
-  }
-  cache = { data: all, ts: Date.now() };
-  return all;
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a18; --bg2: #232320; --bg3: #2a2a27;
+        --text: #f0efe8; --text2: #a8a8a3; --text3: #6b6b66;
+        --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.18);
+        --teal-l: #0d3d2c; --amber-l: #3a2a08; --blue-l: #0c2540; --red-ab-l: #3a1010;
+      }
+    }
+    html, body { height: 100%; font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; }
+    .app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 52px; border-bottom: 0.5px solid var(--border);
+      background: var(--bg); flex-shrink: 0; z-index: 20;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--teal); display: flex; align-items: center; justify-content: center; }
+    .logo-icon i { color: #fff; font-size: 17px; }
+    .logo-name { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+    .logo-sub { font-size: 11px; color: var(--text2); }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .ota-legend { display: flex; gap: 10px; font-size: 11px; color: var(--text2); }
+    .ota-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 3px; }
+    .user-btn {
+      display: flex; align-items: center; gap: 7px; padding: 5px 12px;
+      border: 0.5px solid var(--border2); border-radius: var(--radius);
+      background: var(--bg2); cursor: pointer; font-size: 12px; color: var(--text);
+      font-family: var(--font);
+    }
+    .av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 2px; padding: 0 20px;
+      border-bottom: 0.5px solid var(--border); background: var(--bg); flex-shrink: 0;
+    }
+    .tab {
+      padding: 10px 16px; font-size: 13px; cursor: pointer; background: transparent;
+      border: none; border-bottom: 2px solid transparent; color: var(--text2);
+      font-family: var(--font); transition: all 0.15s;
+    }
+    .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 500; }
+    .tab:hover:not(.active) { color: var(--text); background: var(--bg2); }
+    .prop-counter { margin-left: auto; display: flex; align-items: center; font-size: 12px; color: var(--text3); gap: 6px; }
+
+    /* ── FILTERS ── */
+    .filters {
+      display: flex; gap: 8px; padding: 10px 20px; align-items: center; flex-wrap: wrap;
+      border-bottom: 0.5px solid var(--border); background: var(--bg2); flex-shrink: 0;
+    }
+    .filter-label { font-size: 12px; color: var(--text3); }
+    .fbtn {
+      display: flex; align-items: center; gap: 5px; padding: 5px 12px;
+      border: 0.5px solid var(--border2); border-radius: 20px; cursor: pointer;
+      font-size: 12px; background: var(--bg); color: var(--text2);
+      font-family: var(--font); transition: all 0.15s;
+    }
+    .fbtn.active.f-checkin  { background: var(--teal-l);   color: var(--teal-d);  border-color: var(--teal);   }
+    .fbtn.active.f-checkout { background: var(--amber-l);  color: var(--amber);   border-color: var(--amber);  }
+    .fbtn.active.f-airbnb   { background: var(--red-ab-l); color: var(--red-ab);  border-color: var(--red-ab); }
+    .fbtn.active.f-booking  { background: var(--blue-l);   color: var(--blue);    border-color: var(--blue);   }
+    .search-wrap {
+      margin-left: auto; display: flex; align-items: center; gap: 6px;
+      padding: 5px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius);
+      background: var(--bg);
+    }
+    .search-wrap input { border: none; background: transparent; font-size: 12px; color: var(--text); outline: none; width: 140px; font-family: var(--font); }
+    .search-wrap input::placeholder { color: var(--text3); }
+
+    /* ── MAIN LAYOUT ── */
+    .main { display: flex; flex: 1; overflow: hidden; }
+    .content { flex: 1; overflow-y: auto; }
+
+    /* ── CALENDAR ── */
+    .cal-wrap { padding: 20px; }
+    .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .cal-nav { display: flex; align-items: center; gap: 8px; }
+    .cal-nav button {
+      width: 30px; height: 30px; border: 0.5px solid var(--border2);
+      border-radius: var(--radius); background: var(--bg); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: var(--text2); font-size: 14px;
+    }
+    .cal-nav button:hover { background: var(--bg2); }
+    .cal-month { font-size: 16px; font-weight: 500; }
+    .today-btn {
+      padding: 5px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius);
+      background: var(--bg); cursor: pointer; font-size: 12px; color: var(--text2); font-family: var(--font);
+    }
+    .today-btn:hover { background: var(--bg2); }
+    .cal-grid { border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); background: var(--bg2); border-bottom: 0.5px solid var(--border); }
+    .cal-wd { padding: 8px; text-align: center; font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    .cal-days { display: grid; grid-template-columns: repeat(7,1fr); }
+    .cal-day {
+      min-height: 88px; padding: 8px 6px; border-right: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border); background: var(--bg);
+      cursor: pointer; transition: background 0.1s; position: relative;
+    }
+    .cal-day:hover { background: var(--bg2); }
+    .cal-day.other .dn { color: var(--text3); }
+    .cal-day.today { background: var(--teal-l); }
+    .cal-day.today .dn { color: var(--teal-d); font-weight: 600; }
+    .dn { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+    .ev {
+      display: flex; align-items: center; gap: 3px; padding: 2px 5px;
+      border-radius: 4px; font-size: 10px; margin-bottom: 2px;
+      cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ev.ci { background: var(--teal-l); color: var(--teal-d); }
+    .ev.co { background: var(--amber-l); color: var(--amber); }
+    .ev-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .more { font-size: 9px; color: var(--text3); padding: 1px 4px; }
+    .has-comment { width: 6px; height: 6px; border-radius: 50%; background: var(--coral); position: absolute; top: 6px; right: 6px; }
+
+    /* ── LIST VIEW ── */
+    .list-wrap { padding: 20px; }
+    .list-head {
+      display: grid; grid-template-columns: 110px 1fr 120px 60px 80px 50px;
+      gap: 8px; padding: 6px 12px;
+      font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;
+      border-bottom: 0.5px solid var(--border); margin-bottom: 2px;
+    }
+    .list-row {
+      display: grid; grid-template-columns: 110px 1fr 120px 60px 80px 50px;
+      gap: 8px; padding: 10px 12px; align-items: center;
+      border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.1s;
+      border-radius: var(--radius);
+    }
+    .list-row:hover { background: var(--bg2); }
+    .list-row.past { opacity: 0.5; }
+    .ldate { font-size: 13px; font-weight: 500; }
+    .lprop { font-size: 13px; }
+    .lprop-sub { font-size: 11px; color: var(--text3); }
+    .lguest { font-size: 12px; color: var(--text2); }
+    .lnights { font-size: 12px; color: var(--text2); text-align: center; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 500;
+    }
+    .badge.ci  { background: var(--teal-l);   color: var(--teal-d); }
+    .badge.co  { background: var(--amber-l);  color: var(--amber);  }
+    .badge.ab  { background: var(--red-ab-l); color: var(--red-ab); }
+    .badge.bk  { background: var(--blue-l);   color: var(--blue);   }
+    .today-tag {
+      display: inline-flex; padding: 1px 6px; background: var(--teal-l); color: var(--teal-d);
+      border-radius: 4px; font-size: 10px; font-weight: 500; margin-left: 5px;
+    }
+
+    /* ── TODAY VIEW ── */
+    .today-wrap { padding: 20px; }
+    .today-title { font-size: 16px; font-weight: 500; margin-bottom: 16px; }
+    .today-card {
+      border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px;
+      margin-bottom: 12px; cursor: pointer; background: var(--bg); transition: background 0.1s;
+    }
+    .today-card:hover { background: var(--bg2); }
+    .today-badges { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    .today-prop { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+    .today-sub { font-size: 12px; color: var(--text2); }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 300px; border-left: 0.5px solid var(--border); background: var(--bg);
+      display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
+    }
+    .sb-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; gap: 8px; }
+    .sb-empty i { font-size: 36px; color: var(--text3); }
+    .sb-empty p { font-size: 13px; color: var(--text2); }
+    .sb-empty small { font-size: 12px; color: var(--text3); }
+    .sb-head { padding: 16px; border-bottom: 0.5px solid var(--border); }
+    .sb-prop { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+    .sb-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .sb-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .sb-lbl { font-size: 12px; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+    .sb-val { font-size: 12px; font-weight: 500; }
+    .sb-comments { flex: 1; overflow-y: auto; padding: 12px 16px; }
+    .sb-ctitle { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .comment { display: flex; gap: 8px; margin-bottom: 12px; }
+    .cav { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+    .cbody { flex: 1; }
+    .cmeta { display: flex; gap: 6px; align-items: baseline; margin-bottom: 2px; }
+    .cauthor { font-size: 12px; font-weight: 500; }
+    .ctime { font-size: 11px; color: var(--text3); }
+    .ctext { font-size: 12px; color: var(--text2); line-height: 1.5; }
+    .sb-input { padding: 12px 16px; border-top: 0.5px solid var(--border); display: flex; gap: 8px; align-items: flex-end; }
+    textarea.cinput {
+      flex: 1; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius);
+      font-size: 12px; font-family: var(--font); color: var(--text); background: var(--bg2);
+      resize: none; outline: none; min-height: 36px; max-height: 80px; line-height: 1.5;
+    }
+    .send-btn {
+      width: 34px; height: 34px; border-radius: var(--radius); border: none;
+      background: var(--teal); color: #fff; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px;
+      transition: background 0.15s;
+    }
+    .send-btn:hover { background: var(--teal-d); }
+
+    /* ── USER MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+    }
+    .modal-box {
+      background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border2);
+      padding: 24px; width: 320px;
+    }
+    .modal-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .modal-title { font-size: 16px; font-weight: 500; }
+    .modal-sub { font-size: 12px; color: var(--text2); }
+    .user-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .uoption {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border: 0.5px solid var(--border2); border-radius: var(--radius);
+      cursor: pointer; transition: all 0.15s; background: var(--bg);
+    }
+    .uoption:hover { border-color: var(--teal); background: var(--teal-l); }
+    .uname { font-size: 13px; font-weight: 500; }
+    .urole { font-size: 11px; color: var(--text2); }
+    .divider { display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+    .dline { flex: 1; height: 0.5px; background: var(--border); }
+    .dtext { font-size: 11px; color: var(--text3); }
+    .new-user { display: flex; gap: 8px; }
+    .new-user input { flex: 1; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; color: var(--text); background: var(--bg2); outline: none; font-family: var(--font); }
+
+    /* ── LOADING / ERROR ── */
+    .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; gap: 12px; color: var(--text2); font-size: 13px; }
+    .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── MOBILE MODAL ── */
+    .mob-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; align-items: flex-end; justify-content: center;
+    }
+    .mob-modal-overlay.open { display: flex; }
+    .mob-modal-box {
+      background: var(--bg); border-radius: 16px 16px 0 0;
+      width: 100%; max-height: 85vh; display: flex; flex-direction: column;
+      overflow: hidden; padding-bottom: env(safe-area-inset-bottom);
+    }
+    .mob-modal-handle {
+      width: 36px; height: 4px; background: var(--border2); border-radius: 2px;
+      margin: 12px auto 8px;
+    }
+    .mob-modal-head { padding: 8px 16px 12px; border-bottom: 0.5px solid var(--border); }
+    .mob-modal-prop { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+    .mob-modal-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .mob-modal-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .mob-modal-lbl { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+    .mob-modal-val { font-size: 13px; font-weight: 500; }
+    .mob-modal-comments { flex: 1; overflow-y: auto; padding: 12px 16px; }
+    .mob-modal-ctitle { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .mob-modal-input { padding: 12px 16px; border-top: 0.5px solid var(--border); display: flex; gap: 8px; align-items: flex-end; }
+
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .list-head, .list-row { grid-template-columns: 90px 1fr 70px 50px; }
+      .list-head > *:nth-child(3), .list-row > *:nth-child(3),
+      .list-head > *:nth-child(6), .list-row > *:nth-child(6) { display: none; }
+      .ota-legend { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- USER MODAL -->
+  <div class="modal-overlay" id="userModal">
+    <div class="modal-box">
+      <div class="modal-logo">
+        <div class="logo-icon" style="width:38px;height:38px;"><i class="ti ti-building"></i></div>
+        <div><div class="modal-title">AIRHOST.CL</div><div class="modal-sub">¿Quién eres hoy?</div></div>
+      </div>
+      <div class="user-options" id="userOptions"></div>
+      <div class="divider"><div class="dline"></div><div class="dtext">o ingresa tu nombre</div><div class="dline"></div></div>
+      <div class="new-user">
+        <input type="text" id="newUserInput" placeholder="Nuevo integrante..." />
+        <button class="send-btn" onclick="addUser()"><i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-building"></i></div>
+      <div><div class="logo-name">AIRHOST.CL</div><div class="logo-sub">Panel de propiedades</div></div>
+    </div>
+    <div class="topbar-right">
+      <div class="ota-legend">
+        <span><span class="ota-dot" style="background:#E8484C;"></span>Airbnb</span>
+        <span><span class="ota-dot" style="background:#378ADD;"></span>Booking</span>
+      </div>
+      <button class="user-btn" onclick="openModal()">
+        <div class="av" id="topAv">?</div>
+        <span id="topName">Seleccionar</span>
+        <i class="ti ti-chevron-down" style="font-size:12px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('calendar',this)"><i class="ti ti-calendar" style="font-size:13px;margin-right:4px;"></i>Calendario</button>
+    <button class="tab" onclick="switchTab('list',this)"><i class="ti ti-list" style="font-size:13px;margin-right:4px;"></i>Lista</button>
+    <button class="tab" onclick="switchTab('today',this)"><i class="ti ti-clock" style="font-size:13px;margin-right:4px;"></i>Hoy</button>
+    <div class="prop-counter"><i class="ti ti-home" style="font-size:13px;"></i><span id="propCount">—</span></div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <span class="filter-label"><i class="ti ti-filter" style="font-size:13px;"></i> Filtros:</span>
+    <button class="fbtn f-checkin active" id="f-checkin" onclick="toggleFilter('checkin')"><i class="ti ti-arrow-down-circle" style="font-size:12px;"></i>Check-in</button>
+    <button class="fbtn f-checkout active" id="f-checkout" onclick="toggleFilter('checkout')"><i class="ti ti-arrow-up-circle" style="font-size:12px;"></i>Check-out</button>
+    <button class="fbtn f-airbnb active" id="f-airbnb" onclick="toggleFilter('airbnb')"><i class="ti ti-home" style="font-size:12px;"></i>Airbnb</button>
+    <button class="fbtn f-booking active" id="f-booking" onclick="toggleFilter('booking')"><i class="ti ti-hotel-service" style="font-size:12px;"></i>Booking</button>
+    <div class="search-wrap"><i class="ti ti-search" style="font-size:13px;color:var(--text3);"></i><input type="text" id="searchInput" placeholder="Buscar propiedad o huésped..." oninput="renderAll()" /></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- CALENDAR VIEW -->
+    <div class="content" id="viewCalendar">
+      <div class="cal-wrap">
+        <div class="cal-head">
+          <div class="cal-nav">
+            <button onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
+            <div class="cal-month" id="calLabel"></div>
+            <button onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <button class="today-btn" onclick="goToday()">Hoy</button>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-weekdays" id="calWd"></div>
+          <div class="cal-days" id="calDays"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div class="content" id="viewList" style="display:none;">
+      <div class="list-wrap">
+        <div class="list-head"><div>Fecha</div><div>Propiedad</div><div>Huésped</div><div style="text-align:center;">Noches</div><div>Tipo</div><div>OTA</div></div>
+        <div id="listRows"></div>
+      </div>
+    </div>
+
+    <!-- TODAY VIEW -->
+    <div class="content" id="viewToday" style="display:none;">
+      <div class="today-wrap">
+        <div class="today-title" id="todayTitle"></div>
+        <div id="todayCards"></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-empty" id="sbEmpty">
+        <i class="ti ti-calendar-event"></i>
+        <p>Selecciona un evento</p>
+        <small>Haz clic en cualquier check-in o check-out para ver detalles y notas del equipo</small>
+      </div>
+      <div id="sbContent" style="display:none;flex-direction:column;height:100%;">
+        <div class="sb-head">
+          <div class="sb-prop" id="sbProp"></div>
+          <div class="sb-badges" id="sbBadges"></div>
+          <div class="sb-row"><span class="sb-lbl"><i class="ti ti-user" style="font-size:12px;"></i>Huésped</span><span class="sb-val" id="sbGuest"></span></div>
+          <div class="sb-row"><span class="sb-lbl"><i class="ti ti-door-enter" style="font-size:12px;"></i>Check-in</span><span class="sb-val" id="sbCi"></span></div>
+          <div class="sb-row"><span class="sb-lbl"><i class="ti ti-door-exit" style="font-size:12px;"></i>Check-out</span><span class="sb-val" id="sbCo"></span></div>
+          <div class="sb-row"><span class="sb-lbl"><i class="ti ti-moon" style="font-size:12px;"></i>Noches</span><span class="sb-val" id="sbNights"></span></div>
+        </div>
+        <div class="sb-comments" id="sbComments">
+          <div class="sb-ctitle">Notas del equipo</div>
+          <div id="commentList"></div>
+        </div>
+        <div class="sb-input">
+          <textarea class="cinput" id="commentInput" placeholder="Escribe una nota para el equipo..." rows="1"></textarea>
+          <button class="send-btn" onclick="sendComment()"><i class="ti ti-send"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE EVENT MODAL -->
+<div class="mob-modal-overlay" id="mobModal">
+  <div class="mob-modal-box" id="mobModalBox">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px 4px;"><div class="mob-modal-handle" style="margin:0;"></div><button onclick="closeMobModal()" style="background:none;border:none;font-size:24px;color:var(--text2);cursor:pointer;padding:0;line-height:1;">&times;</button></div>
+    <div class="mob-modal-head">
+      <div class="mob-modal-prop" id="mobProp"></div>
+      <div class="mob-modal-badges" id="mobBadges"></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Huésped</span><span class="mob-modal-val" id="mobGuest"></span></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Check-in</span><span class="mob-modal-val" id="mobCi"></span></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Check-out</span><span class="mob-modal-val" id="mobCo"></span></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Noches</span><span class="mob-modal-val" id="mobNights"></span></div>
+    </div>
+    <div class="mob-modal-comments"><div class="mob-modal-ctitle">Notas del equipo</div><div id="mobCommentList"></div></div>
+    <div class="mob-modal-input"><textarea class="cinput" id="mobCommentInput" placeholder="Escribe una nota..." rows="1"></textarea><button class="send-btn" onclick="sendMobComment()"><i class="ti ti-send"></i></button></div>
+  </div>
+</div>
+
+<script>
+// ── EQUIPO ────────────────────────────────────────────────────────────────────
+const TEAM = [
+  { name: 'Mike B.',    role: 'Administrador',  color: '#185FA5', bg: '#E6F1FB' },
+  { name: 'Claudia',   role: 'Coord. Cleaners', color: '#1D9E75', bg: '#E1F5EE' },
+  { name: 'Mike David',role: 'Mantenimiento',   color: '#BA7517', bg: '#FAEEDA' },
+  // Agrega más cleaners aquí:
+  // { name: 'Nombre', role: 'Cleaner', color: '#993556', bg: '#FBEAF0' },
+];
+// ─────────────────────────────────────────────────────────────────────────────
+
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+let currentUser = null;
+let reservations = [];
+let properties   = [];
+let filters = { checkin: true, checkout: true, airbnb: true, booking: true };
+let calMonth = new Date().getMonth();
+let calYear  = new Date().getFullYear();
+let activeTab = 'calendar';
+let selectedRes = null;
+let commentsCache = {};
+
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    ...opts,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
 }
 
-app.get('/reservations', async (req, res) => {
+async function loadComments(reservationId) {
   try {
-    const reservations = await getAllReservations();
-    res.json({ ok: true, reservations, properties: PROPERTIES.map(p => ({ id: p.id, name: p.name, ota: p.ota })) });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
+    const rows = await sbFetch(`comments?reservation_id=eq.${encodeURIComponent(reservationId)}&order=created_at.asc`);
+    commentsCache[reservationId] = rows;
+    return rows;
+  } catch(e) { console.error('Comments error:', e); return []; }
+}
+
+async function saveComment(reservationId, propName, text) {
+  const row = await sbFetch('comments', {
+    method: 'POST',
+    body: JSON.stringify({ reservation_id: reservationId, prop_name: propName, author: currentUser.name, text })
+  });
+  if (!commentsCache[reservationId]) commentsCache[reservationId] = [];
+  commentsCache[reservationId].push(row[0]);
+  return row[0];
+}
+
+// ── DATA LOADING ──────────────────────────────────────────────────────────────
+async function loadData() {
+  const calDays = document.getElementById('calDays');
+  calDays.innerHTML = `<div class="loading" style="grid-column:1/-1;"><div class="spinner"></div><span>Cargando calendarios...</span></div>`;
+  try {
+    const res = await fetch(BACKEND_URL + '/reservations');
+    const data = await res.json();
+    reservations = data.reservations || [];
+    properties   = data.properties   || [];
+    document.getElementById('propCount').textContent = properties.length + ' propiedades';
+    renderAll();
+  } catch(e) {
+    calDays.innerHTML = `<div class="loading" style="grid-column:1/-1;color:#E24B4A;"><i class="ti ti-alert-circle" style="font-size:28px;"></i><span>Error conectando al backend.<br>Verifica que Render esté activo.</span></div>`;
   }
+}
+
+// ── FILTERS & SEARCH ──────────────────────────────────────────────────────────
+function toggleFilter(f) {
+  filters[f] = !filters[f];
+  const btn = document.getElementById('f-' + f);
+  filters[f] ? btn.classList.add('active') : btn.classList.remove('active');
+  renderAll();
+}
+
+function getFiltered() {
+  const q = (document.getElementById('searchInput').value || '').toLowerCase();
+  return reservations.filter(r => {
+    if (!filters.airbnb   && r.ota === 'airbnb')   return false;
+    if (!filters.booking  && r.ota === 'booking')  return false;
+    if (q && !r.propName.toLowerCase().includes(q) && !(r.guest||'').toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderAll() {
+  if (activeTab === 'calendar') renderCalendar();
+  else if (activeTab === 'list') renderList();
+  else renderToday();
+}
+
+function renderCalendar() {
+  document.getElementById('calLabel').textContent = MONTHS[calMonth] + ' ' + calYear;
+  const wd = document.getElementById('calWd');
+  wd.innerHTML = DAYS.map(d => `<div class="cal-wd">${d}</div>`).join('');
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const dim   = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date();
+  const evts  = getFiltered();
+  let cells = [];
+  const prevDim = new Date(calYear, calMonth, 0).getDate();
+  for (let i = first - 1; i >= 0; i--) cells.push({ d: prevDim - i, other: true, date: new Date(calYear, calMonth - 1, prevDim - i) });
+  for (let d = 1; d <= dim; d++) cells.push({ d, other: false, date: new Date(calYear, calMonth, d) });
+  while (cells.length % 7) { const n = cells.length - dim - first + 1; cells.push({ d: n, other: true, date: new Date(calYear, calMonth + 1, n) }); }
+
+  const container = document.getElementById('calDays');
+  container.innerHTML = cells.map(cell => {
+    const ds = cell.date.toDateString();
+    const isToday = !cell.other && ds === today.toDateString();
+    const dayEvts = evts.filter(r => {
+      const ci = new Date(r.checkin + 'T12:00:00').toDateString() === ds;
+      const co = new Date(r.checkout + 'T12:00:00').toDateString() === ds;
+      if (!filters.checkin  && ci && !co) return false;
+      if (!filters.checkout && co && !ci) return false;
+      return ci || co;
+    });
+    const hasComment = dayEvts.some(r => (commentsCache[r.id] || []).length > 0);
+    const evHTML = dayEvts.slice(0, 3).map(r => {
+      const isCi = new Date(r.checkin + 'T12:00:00').toDateString() === ds;
+      const dotColor = r.ota === 'airbnb' ? '#E8484C' : '#378ADD';
+      const short = r.propName.split(' ').slice(0, 2).join(' ');
+      return `<div class="ev ${isCi ? 'ci' : 'co'}" onclick="openEvent('${r.id}',event)"><span class="ev-dot" style="background:${dotColor};"></span>${isCi ? '↓' : '↑'} ${short}</div>`;
+    }).join('');
+    const more = dayEvts.length > 3 ? `<div class="more">+${dayEvts.length - 3} más</div>` : '';
+    return `<div class="cal-day${cell.other ? ' other' : ''}${isToday ? ' today' : ''}">
+      <div class="dn">${cell.d}</div>
+      ${hasComment ? '<div class="has-comment"></div>' : ''}
+      ${evHTML}${more}
+    </div>`;
+  }).join('');
+}
+
+function renderList() {
+  const evts = getFiltered();
+  const now = new Date();
+  const rows = [];
+  evts.forEach(r => {
+    if (filters.checkin)  rows.push({ r, type: 'checkin',  date: new Date(r.checkin  + 'T12:00:00') });
+    if (filters.checkout) rows.push({ r, type: 'checkout', date: new Date(r.checkout + 'T12:00:00') });
+  });
+  rows.sort((a, b) => a.date - b.date);
+  const cont = document.getElementById('listRows');
+  if (!rows.length) { cont.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text3);font-size:13px;">Sin eventos con los filtros actuales</div>`; return; }
+  cont.innerHTML = rows.map(({ r, type, date }) => {
+    const isToday = date.toDateString() === now.toDateString();
+    const isPast  = date < now && !isToday;
+    const otaBadge = r.ota === 'airbnb'
+      ? `<span class="badge ab">AB</span>`
+      : `<span class="badge bk">BK</span>`;
+    const typeBadge = type === 'checkin'
+      ? `<span class="badge ci">↓ In</span>`
+      : `<span class="badge co">↑ Out</span>`;
+    const hasC = (commentsCache[r.id] || []).length > 0;
+    return `<div class="list-row${isPast ? ' past' : ''}" onclick="openEvent('${r.id}',event)">
+      <div class="ldate">${date.getDate()} ${MONTHS[date.getMonth()].slice(0,3)}${isToday ? '<span class="today-tag">Hoy</span>' : ''}</div>
+      <div><div class="lprop">${r.propName}</div></div>
+      <div class="lguest">${r.guest || '—'}</div>
+      <div class="lnights">${r.nights}n</div>
+      <div>${typeBadge}</div>
+      <div style="display:flex;gap:4px;align-items:center;">${otaBadge}${hasC ? '<i class="ti ti-message-circle" style="font-size:12px;color:var(--coral);"></i>' : ''}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderToday() {
+  const now = new Date();
+  document.getElementById('todayTitle').textContent = `Hoy — ${now.getDate()} de ${MONTHS[now.getMonth()]} de ${now.getFullYear()}`;
+  const evts = getFiltered();
+  const todayEvts = [];
+  evts.forEach(r => {
+    if (filters.checkin  && new Date(r.checkin  + 'T12:00:00').toDateString() === now.toDateString()) todayEvts.push({ r, type: 'checkin' });
+    if (filters.checkout && new Date(r.checkout + 'T12:00:00').toDateString() === now.toDateString()) todayEvts.push({ r, type: 'checkout' });
+  });
+  const cont = document.getElementById('todayCards');
+  if (!todayEvts.length) {
+    cont.innerHTML = `<div style="padding:40px 0;text-align:center;color:var(--text3);font-size:13px;"><i class="ti ti-coffee" style="font-size:36px;display:block;margin-bottom:8px;"></i>Sin movimientos hoy</div>`;
+    return;
+  }
+  cont.innerHTML = todayEvts.map(({ r, type }) => {
+    const isCi = type === 'checkin';
+    const otaLabel = r.ota === 'airbnb' ? '<span class="badge ab">Airbnb</span>' : '<span class="badge bk">Booking</span>';
+    const typeBadge = isCi ? '<span class="badge ci">↓ Check-in</span>' : '<span class="badge co">↑ Check-out</span>';
+    const cmtCount = (commentsCache[r.id] || []).length;
+    return `<div class="today-card" onclick="openEvent('${r.id}',event)">
+      <div class="today-badges">${typeBadge}${otaLabel}${cmtCount ? `<span class="badge" style="background:var(--coral-l);color:var(--coral);margin-left:auto;">${cmtCount} nota${cmtCount>1?'s':''}</span>` : ''}</div>
+      <div class="today-prop">${r.propName}</div>
+      <div class="today-sub">${r.guest || 'Huésped'} · ${r.nights} noche${r.nights>1?'s':''}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── SIDEBAR / EVENT DETAIL ────────────────────────────────────────────────────
+async function openEvent(id, e) {
+  if (e) e.stopPropagation();
+  selectedRes = reservations.find(r => r.id === id);
+  if (!selectedRes) return;
+  const r = selectedRes;
+  document.getElementById('sbEmpty').style.display = 'none';
+  const sc = document.getElementById('sbContent');
+  sc.style.display = 'flex';
+  document.getElementById('sbProp').textContent = r.propName;
+  const ci = new Date(r.checkin  + 'T12:00:00');
+  const co = new Date(r.checkout + 'T12:00:00');
+  const otaLabel = r.ota === 'airbnb' ? '<span class="badge ab">Airbnb</span>' : '<span class="badge bk">Booking</span>';
+  document.getElementById('sbBadges').innerHTML = `
+    <span class="badge ci">↓ Check-in ${ci.getDate()}/${ci.getMonth()+1}</span>
+    <span class="badge co">↑ Check-out ${co.getDate()}/${co.getMonth()+1}</span>
+    ${otaLabel}`;
+  document.getElementById('sbGuest').textContent  = r.guest || 'Huésped';
+  document.getElementById('sbCi').textContent     = `${ci.getDate()} ${MONTHS[ci.getMonth()]}`;
+  document.getElementById('sbCo').textContent     = `${co.getDate()} ${MONTHS[co.getMonth()]}`;
+  document.getElementById('sbNights').textContent = `${r.nights} noche${r.nights>1?'s':''}`;
+  renderComments([]);
+  const cmts = await loadComments(r.id);
+  renderComments(cmts);
+  renderAll();
+}
+
+function renderComments(cmts) {
+  const list = document.getElementById('commentList');
+  if (!cmts.length) {
+    list.innerHTML = `<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas. Sé el primero.</div>`;
+    return;
+  }
+  list.innerHTML = cmts.map(c => {
+    const u = TEAM.find(t => t.name === c.author) || { color: 'var(--teal-d)', bg: 'var(--teal-l)' };
+    const ts = new Date(c.created_at);
+    const timeStr = ts.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = ts.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+    return `<div class="comment">
+      <div class="cav" style="background:${u.bg};color:${u.color};">${(c.author||'?').slice(0,2).toUpperCase()}</div>
+      <div class="cbody">
+        <div class="cmeta"><span class="cauthor">${c.author}</span><span class="ctime">${dateStr} ${timeStr}</span></div>
+        <div class="ctext">${c.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const sb = document.getElementById('sbComments');
+  sb.scrollTop = sb.scrollHeight;
+}
+
+async function sendComment() {
+  if (!currentUser) { openModal(); return; }
+  if (!selectedRes) return;
+  const input = document.getElementById('commentInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.disabled = true;
+  try {
+    await saveComment(selectedRes.id, selectedRes.propName, text);
+    renderComments(commentsCache[selectedRes.id] || []);
+    renderAll();
+  } catch(e) {
+    alert('Error guardando la nota. Verifica la conexión a Supabase.');
+  } finally {
+    input.disabled = false;
+    input.focus();
+  }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['Calendar','List','Today'].forEach(v => {
+    document.getElementById('view' + v).style.display = (tab === v.toLowerCase()) ? 'block' : 'none';
+  });
+  renderAll();
+}
+function changeMonth(d) {
+  calMonth += d;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+function goToday() {
+  const now = new Date();
+  calMonth = now.getMonth(); calYear = now.getFullYear();
+  renderCalendar();
+}
+
+// ── USER MODAL ────────────────────────────────────────────────────────────────
+function buildUserOptions() {
+  document.getElementById('userOptions').innerHTML = TEAM.map(u =>
+    `<div class="uoption" onclick="selectUser('${u.name}')">
+      <div class="cav" style="background:${u.bg};color:${u.color};">${u.name.slice(0,2).toUpperCase()}</div>
+      <div><div class="uname">${u.name}</div><div class="urole">${u.role}</div></div>
+    </div>`
+  ).join('');
+}
+function openModal()  { document.getElementById('userModal').style.display = 'flex'; }
+function selectUser(name) {
+  const u = TEAM.find(t => t.name === name) || { name, role: 'Equipo', color: 'var(--teal-d)', bg: 'var(--teal-l)' };
+  currentUser = u;
+  const av = document.getElementById('topAv');
+  av.textContent = name.slice(0, 2).toUpperCase();
+  av.style.background = u.bg; av.style.color = u.color;
+  document.getElementById('topName').textContent = name;
+  document.getElementById('userModal').style.display = 'none';
+}
+function addUser() {
+  const n = document.getElementById('newUserInput').value.trim();
+  if (!n) return;
+  TEAM.push({ name: n, role: 'Equipo', color: 'var(--teal-d)', bg: 'var(--teal-l)' });
+  buildUserOptions();
+  selectUser(n);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('commentInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); }
 });
+buildUserOptions();
+loadData();
+</script>
+</body>
+</html>
+<script>
+// ── MOBILE MODAL ──────────────────────────────────────────────────────────────
+function isMobile() { return window.innerWidth <= 700; }
 
-app.get('/health', (req, res) => res.json({ ok: true }));
+function openMobModal(r) {
+  const ci = new Date(r.checkin  + 'T12:00:00');
+  const co = new Date(r.checkout + 'T12:00:00');
+  document.getElementById('mobProp').textContent = r.propName;
+  const otaLabel = r.ota === 'airbnb' ? '<span class="badge ab">Airbnb</span>' : '<span class="badge bk">Booking</span>';
+  document.getElementById('mobBadges').innerHTML = `
+    <span class="badge ci">↓ Check-in ${ci.getDate()}/${ci.getMonth()+1}</span>
+    <span class="badge co">↑ Check-out ${co.getDate()}/${co.getMonth()+1}</span>
+    ${otaLabel}`;
+  document.getElementById('mobGuest').textContent  = r.guest || 'Huésped';
+  document.getElementById('mobCi').textContent     = `${ci.getDate()} ${MONTHS[ci.getMonth()]}`;
+  document.getElementById('mobCo').textContent     = `${co.getDate()} ${MONTHS[co.getMonth()]}`;
+  document.getElementById('mobNights').textContent = `${r.nights} noche${r.nights>1?'s':''}`;
+  renderMobComments(commentsCache[r.id] || []);
+  document.getElementById('mobModal').classList.add('open');
+  loadComments(r.id).then(cmts => renderMobComments(cmts));
+}
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`AIRHOST backend running on port ${PORT}`));
+function closeMobModal(e) {
+  if (!e) { document.getElementById('mobModal').classList.remove('open'); return; }
+  if (!e || e.target === document.getElementById('mobModal')) {
+    document.getElementById('mobModal').classList.remove('open');
+  }
+}
+
+function renderMobComments(cmts) {
+  const list = document.getElementById('mobCommentList');
+  if (!cmts.length) { list.innerHTML = `<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas.</div>`; return; }
+  list.innerHTML = cmts.map(c => {
+    const u = TEAM.find(t => t.name === c.author) || { color: 'var(--teal-d)', bg: 'var(--teal-l)' };
+    const ts = new Date(c.created_at);
+    const timeStr = ts.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = ts.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+    return `<div class="comment">
+      <div class="cav" style="background:${u.bg};color:${u.color};">${(c.author||'?').slice(0,2).toUpperCase()}</div>
+      <div class="cbody">
+        <div class="cmeta"><span class="cauthor">${c.author}</span><span class="ctime">${dateStr} ${timeStr}</span></div>
+        <div class="ctext">${c.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const mc = document.getElementById('mobComments');
+  mc.scrollTop = mc.scrollHeight;
+}
+
+async function sendMobComment() {
+  if (!currentUser) { openModal(); return; }
+  if (!selectedRes) return;
+  const input = document.getElementById('mobCommentInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; input.disabled = true;
+  try {
+    await saveComment(selectedRes.id, selectedRes.propName, text);
+    renderMobComments(commentsCache[selectedRes.id] || []);
+    renderAll();
+  } catch(e) { alert('Error guardando la nota.'); }
+  finally { input.disabled = false; input.focus(); }
+}
+
+// Override openEvent to show mobile modal on small screens
+const _origOpenEvent = openEvent;
+window.openEvent = async function(id, e) {
+  if (e) e.stopPropagation();
+  selectedRes = reservations.find(r => r.id === id);
+  if (!selectedRes) return;
+  if (isMobile()) {
+    openMobModal(selectedRes);
+  } else {
+    _origOpenEvent(id, e);
+  }
+};
+
+document.getElementById('mobCommentInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMobComment(); }
+});
+</script>
