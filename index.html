@@ -14,10 +14,9 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --teal: #1D9E75; --teal-l: #E1F5EE; --teal-d: #0F6E56;
-      --amber: #BA7517; --amber-l: #FAEEDA;
+      --red: #D94040;  --red-l: #FDEAEA;  --red-d: #A82E2E;
       --blue: #378ADD; --blue-l: #E6F1FB;
       --coral: #D85A30; --coral-l: #FAECE7;
-      --red: #E8484C; --red-l: #FDEAEA;
       --bg: #ffffff; --bg2: #f6f6f4; --bg3: #eeecea;
       --text: #1a1a18; --text2: #6b6b66; --text3: #a8a8a3;
       --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16);
@@ -30,8 +29,7 @@
         --bg: #161614; --bg2: #1e1e1c; --bg3: #252523;
         --text: #f0efe8; --text2: #a0a09b; --text3: #666662;
         --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
-        --teal-l: #0a2e20; --amber-l: #2e1f04; --blue-l: #0a1e35; --red-l: #2e0d0e;
-        --coral-l: #2e1108;
+        --teal-l: #0a2e20; --red-l: #2e0d0d; --blue-l: #0a1e35;
         --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 0 0 0.5px rgba(255,255,255,0.06);
       }
     }
@@ -41,7 +39,7 @@
     /* ═══ TOPBAR ═══ */
     .topbar {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; height: 52px; border-bottom: 0.5px solid var(--border);
+      padding: 0 16px; height: 50px; border-bottom: 0.5px solid var(--border);
       background: var(--bg); flex-shrink: 0;
     }
     .logo { display: flex; align-items: center; gap: 9px; }
@@ -49,63 +47,59 @@
     .logo-icon i { color: #fff; font-size: 16px; }
     .logo-name { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
     .logo-badge { font-size: 10px; color: var(--text3); background: var(--bg2); padding: 2px 6px; border-radius: 4px; margin-left: 2px; }
-    .user-btn {
-      display: flex; align-items: center; gap: 7px; padding: 5px 10px;
-      border: 0.5px solid var(--border2); border-radius: var(--radius);
-      background: var(--bg2); cursor: pointer; font-size: 12px; color: var(--text); font-family: var(--font);
-    }
+    .user-btn { display: flex; align-items: center; gap: 7px; padding: 5px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg2); cursor: pointer; font-size: 12px; color: var(--text); font-family: var(--font); }
     .av { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
 
     /* ═══ TABS ═══ */
-    .tabs {
-      display: flex; padding: 0 16px; border-bottom: 0.5px solid var(--border);
-      background: var(--bg); flex-shrink: 0; overflow-x: auto; -webkit-overflow-scrolling: touch;
-    }
+    .tabs { display: flex; padding: 0 16px; border-bottom: 0.5px solid var(--border); background: var(--bg); flex-shrink: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .tabs::-webkit-scrollbar { display: none; }
-    .tab {
-      padding: 10px 14px; font-size: 13px; cursor: pointer; background: transparent;
-      border: none; border-bottom: 2px solid transparent; color: var(--text2);
-      font-family: var(--font); white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
-    }
+    .tab { padding: 10px 13px; font-size: 13px; cursor: pointer; background: transparent; border: none; border-bottom: 2px solid transparent; color: var(--text2); font-family: var(--font); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
     .tab.active { color: var(--teal); border-bottom-color: var(--teal); font-weight: 500; }
     .tab:hover:not(.active) { color: var(--text); }
-    .tab-count {
-      display: inline-flex; align-items: center; justify-content: center;
-      min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
-      background: var(--teal); color: #fff; font-size: 10px; font-weight: 600;
-      margin-left: 5px; vertical-align: middle;
-    }
+    .tab-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--teal); color: #fff; font-size: 10px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
     .tab-count.zero { background: var(--bg3); color: var(--text3); }
+
+    /* ═══ FILTERS BAR ═══ */
+    .filters-bar {
+      display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+      border-bottom: 0.5px solid var(--border); background: var(--bg2); flex-shrink: 0; flex-wrap: wrap;
+    }
+    .filter-label { font-size: 11px; color: var(--text3); font-weight: 500; }
+    .fbtn {
+      display: flex; align-items: center; gap: 5px; padding: 5px 12px;
+      border: 1.5px solid var(--border2); border-radius: 20px; cursor: pointer;
+      font-size: 12px; font-weight: 500; background: var(--bg); color: var(--text2);
+      font-family: var(--font); transition: all 0.15s;
+    }
+    .fbtn.active-ci { background: var(--teal-l); color: var(--teal-d); border-color: var(--teal); }
+    .fbtn.active-co { background: var(--red-l);  color: var(--red-d);  border-color: var(--red);  }
+    .fbtn.active-ab { background: #FFF0F0; color: #CC2222; border-color: #E8484C; }
+    .fbtn.active-bk { background: var(--blue-l); color: var(--blue); border-color: var(--blue); }
+    .filter-sep { width: 1px; height: 18px; background: var(--border2); margin: 0 2px; }
 
     /* ═══ MAIN ═══ */
     .main { display: flex; flex: 1; overflow: hidden; }
     .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
-    /* ═══ DAY VIEW (Hoy / Mañana) ═══ */
+    /* ═══ DAY VIEW ═══ */
     .day-view { padding: 16px; max-width: 680px; margin: 0 auto; }
-    .day-header { margin-bottom: 16px; }
+    .day-header { margin-bottom: 14px; }
     .day-title { font-size: 20px; font-weight: 600; letter-spacing: -0.4px; }
     .day-sub { font-size: 13px; color: var(--text2); margin-top: 2px; }
-    .section-label {
-      font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase;
-      letter-spacing: 0.7px; margin-bottom: 8px; margin-top: 16px;
-    }
+    .section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px; margin-top: 16px; display: flex; align-items: center; gap: 6px; }
     .section-label:first-of-type { margin-top: 0; }
-    .empty-day {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 48px 24px; text-align: center; gap: 8px;
-    }
+    .section-label.ci { color: var(--teal-d); }
+    .section-label.co { color: var(--red-d); }
+    .empty-day { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; text-align: center; gap: 8px; }
     .empty-day i { font-size: 40px; color: var(--text3); }
     .empty-day p { font-size: 14px; color: var(--text2); font-weight: 500; }
     .empty-day small { font-size: 12px; color: var(--text3); }
 
-    /* ═══ RESERVATION CARD ═══ */
-    .res-card {
-      background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--radius-lg);
-      padding: 14px 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.15s;
-      box-shadow: var(--shadow);
-    }
-    .res-card:hover { border-color: var(--teal); transform: translateY(-1px); }
+    /* ═══ RES CARD ═══ */
+    .res-card { border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow); border-left: 4px solid transparent; background: var(--bg); border: 0.5px solid var(--border2); border-left-width: 4px; }
+    .res-card.ci { border-left-color: var(--teal); }
+    .res-card.co { border-left-color: var(--red); }
+    .res-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .res-card:active { transform: translateY(0); }
     .res-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
     .res-card-prop { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; flex: 1; }
@@ -113,91 +107,67 @@
     .res-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .res-card-item { display: flex; flex-direction: column; gap: 2px; }
     .res-card-lbl { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
-    .res-card-val { font-size: 13px; font-weight: 500; color: var(--text); }
-    .res-card-comment { display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--text3); }
+    .res-card-val { font-size: 13px; font-weight: 500; }
+    .res-card-note { display: flex; align-items: center; gap: 5px; margin-top: 10px; padding-top: 8px; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--coral); }
 
     /* ═══ BADGES ═══ */
-    .badge {
-      display: inline-flex; align-items: center; gap: 3px;
-      padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap;
-    }
-    .badge.ci  { background: var(--teal-l);  color: var(--teal-d); }
-    .badge.co  { background: var(--amber-l); color: var(--amber);  }
-    .badge.ab  { background: var(--red-l);   color: var(--red);    }
-    .badge.bk  { background: var(--blue-l);  color: var(--blue);   }
+    .badge { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+    .badge.ci  { background: var(--teal-l); color: var(--teal-d); }
+    .badge.co  { background: var(--red-l);  color: var(--red-d);  }
+    .badge.ab  { background: #FFF0F0; color: #CC2222; }
+    .badge.bk  { background: var(--blue-l); color: var(--blue); }
 
     /* ═══ WEEK VIEW ═══ */
     .week-view { padding: 16px; max-width: 900px; margin: 0 auto; }
-    .week-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .week-nav button {
-      width: 32px; height: 32px; border: 0.5px solid var(--border2);
-      border-radius: var(--radius); background: var(--bg2); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; color: var(--text2);
-    }
+    .week-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .week-nav button { width: 32px; height: 32px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg2); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text2); }
     .week-nav button:hover { background: var(--bg3); }
+    .week-nav .today-btn { width: auto; padding: 0 12px; font-size: 12px; font-family: var(--font); }
     .week-title { font-size: 15px; font-weight: 500; flex: 1; }
-    .week-day { margin-bottom: 14px; }
-    .week-day-header {
-      display: flex; align-items: center; gap: 10px; padding: 8px 12px;
-      background: var(--bg2); border-radius: var(--radius); margin-bottom: 6px;
-    }
-    .week-day-num { font-size: 20px; font-weight: 700; color: var(--text); min-width: 28px; text-align: center; }
-    .week-day-name { font-size: 13px; color: var(--text2); }
-    .week-day-today .week-day-num { color: var(--teal); }
-    .week-day-today .week-day-name { color: var(--teal); font-weight: 500; }
-    .week-day-today .week-day-header { background: var(--teal-l); }
-    .week-event {
-      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-      border-radius: var(--radius); margin-bottom: 6px; cursor: pointer;
-      border: 0.5px solid var(--border); background: var(--bg); transition: all 0.12s;
-    }
-    .week-event:hover { border-color: var(--teal); background: var(--bg2); }
-    .week-event-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .week-day { margin-bottom: 12px; }
+    .week-day-header { display: flex; align-items: center; gap: 10px; padding: 7px 12px; background: var(--bg2); border-radius: var(--radius); margin-bottom: 6px; }
+    .week-day-num { font-size: 18px; font-weight: 700; min-width: 26px; text-align: center; }
+    .week-day-name { font-size: 13px; color: var(--text2); flex: 1; }
+    .week-today .week-day-header { background: var(--teal-l); }
+    .week-today .week-day-num { color: var(--teal); }
+    .week-today .week-day-name { color: var(--teal); font-weight: 500; }
+    .week-event { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius); margin-bottom: 6px; cursor: pointer; border-left: 3px solid transparent; background: var(--bg); box-shadow: var(--shadow); transition: all 0.12s; }
+    .week-event.ci { border-left-color: var(--teal); }
+    .week-event.co { border-left-color: var(--red); }
+    .week-event:hover { transform: translateX(2px); }
     .week-event-info { flex: 1; min-width: 0; }
     .week-event-prop { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .week-event-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
     .week-event-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-    .week-no-events { font-size: 12px; color: var(--text3); padding: 6px 12px; }
+    .week-no-events { font-size: 12px; color: var(--text3); padding: 4px 12px 8px; }
 
     /* ═══ CALENDAR VIEW ═══ */
     .cal-view { padding: 16px; }
-    .cal-nav-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-    .cal-nav-row button {
-      width: 32px; height: 32px; border: 0.5px solid var(--border2);
-      border-radius: var(--radius); background: var(--bg2); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; color: var(--text2);
-    }
-    .cal-nav-row button:hover { background: var(--bg3); }
+    .cal-nav-row { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .cal-nav-row button { width: 32px; height: 32px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg2); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text2); }
+    .today-btn { width: auto !important; padding: 0 12px; font-size: 12px; font-family: var(--font); }
     .cal-month-label { font-size: 16px; font-weight: 600; flex: 1; }
-    .today-btn {
-      padding: 5px 12px; border: 0.5px solid var(--border2); border-radius: var(--radius);
-      background: var(--bg2); cursor: pointer; font-size: 12px; color: var(--text2); font-family: var(--font);
-    }
     .cal-grid { border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
     .cal-weekdays { display: grid; grid-template-columns: repeat(7,1fr); background: var(--bg2); border-bottom: 0.5px solid var(--border); }
     .cal-wd { padding: 7px; text-align: center; font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
     .cal-days { display: grid; grid-template-columns: repeat(7,1fr); }
-    .cal-day {
-      min-height: 72px; padding: 6px 5px; border-right: 0.5px solid var(--border);
-      border-bottom: 0.5px solid var(--border); background: var(--bg);
-      cursor: pointer; transition: background 0.1s; position: relative;
-    }
+    .cal-day { min-height: 70px; padding: 6px 5px; border-right: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); background: var(--bg); cursor: pointer; transition: background 0.1s; position: relative; }
     .cal-day:hover { background: var(--bg2); }
-    .cal-day.other { background: var(--bg2); }
+    .cal-day.other { background: var(--bg2); cursor: default; }
     .cal-day.other .dn { color: var(--text3); }
     .cal-day.today { background: var(--teal-l) !important; }
     .cal-day.today .dn { color: var(--teal-d); font-weight: 700; }
-    .dn { font-size: 12px; color: var(--text2); margin-bottom: 3px; }
-    .cal-dot-row { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 2px; }
-    .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
-    .cal-count { font-size: 9px; color: var(--text3); margin-top: 2px; }
-    .has-comment-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--coral); position: absolute; top: 5px; right: 5px; }
+    .cal-day.has-events:hover { background: var(--bg3); }
+    .dn { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+    .cal-ci-row { display: flex; align-items: center; gap: 3px; margin-bottom: 2px; }
+    .cal-co-row { display: flex; align-items: center; gap: 3px; }
+    .cal-pill { font-size: 9px; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
+    .cal-pill.ci { background: var(--teal-l); color: var(--teal-d); }
+    .cal-pill.co { background: var(--red-l); color: var(--red-d); }
+    .has-note-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--coral); position: absolute; top: 5px; right: 5px; }
 
     /* ═══ SIDEBAR ═══ */
-    .sidebar {
-      width: 320px; border-left: 0.5px solid var(--border); background: var(--bg);
-      display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;
-    }
+    .sidebar { width: 320px; border-left: 0.5px solid var(--border); background: var(--bg); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
     .sb-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; gap: 8px; }
     .sb-empty i { font-size: 40px; color: var(--text3); }
     .sb-empty p { font-size: 13px; color: var(--text2); }
@@ -219,37 +189,18 @@
     .ctime { font-size: 11px; color: var(--text3); }
     .ctext { font-size: 12px; color: var(--text2); line-height: 1.5; }
     .sb-input { padding: 12px 16px; border-top: 0.5px solid var(--border); display: flex; gap: 8px; align-items: flex-end; }
-    textarea.cinput {
-      flex: 1; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius);
-      font-size: 12px; font-family: var(--font); color: var(--text); background: var(--bg2);
-      resize: none; outline: none; min-height: 36px; max-height: 80px; line-height: 1.5;
-    }
-    .send-btn {
-      width: 34px; height: 34px; border-radius: var(--radius); border: none;
-      background: var(--teal); color: #fff; cursor: pointer; display: flex;
-      align-items: center; justify-content: center; flex-shrink: 0; font-size: 15px;
-      transition: background 0.15s;
-    }
+    textarea.cinput { flex: 1; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 12px; font-family: var(--font); color: var(--text); background: var(--bg2); resize: none; outline: none; min-height: 36px; max-height: 80px; line-height: 1.5; }
+    .send-btn { width: 34px; height: 34px; border-radius: var(--radius); border: none; background: var(--teal); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 15px; transition: background 0.15s; }
     .send-btn:hover { background: var(--teal-d); }
 
-    /* ═══ MOBILE BOTTOM MODAL ═══ */
-    .mob-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-      z-index: 200; align-items: flex-end;
-    }
+    /* ═══ MOBILE BOTTOM SHEET ═══ */
+    .mob-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: flex-end; }
     .mob-overlay.open { display: flex; }
-    .mob-sheet {
-      background: var(--bg); border-radius: 18px 18px 0 0; width: 100%;
-      max-height: 88dvh; display: flex; flex-direction: column; overflow: hidden;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .mob-sheet-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px 8px;
-    }
+    .mob-sheet { background: var(--bg); border-radius: 18px 18px 0 0; width: 100%; max-height: 88dvh; display: flex; flex-direction: column; overflow: hidden; padding-bottom: env(safe-area-inset-bottom); }
+    .mob-sheet-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 8px; }
     .mob-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto; }
-    .mob-close { background: var(--bg2); border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--text2); font-family: var(--font); }
-    .mob-head { padding: 0 16px 12px; border-bottom: 0.5px solid var(--border); }
+    .mob-close { background: var(--bg2); border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--text2); font-family: var(--font); }
+    .mob-head { padding: 0 16px 14px; border-bottom: 0.5px solid var(--border); }
     .mob-prop { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
     .mob-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
     .mob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -261,23 +212,13 @@
     .mob-input { padding: 12px 16px; border-top: 0.5px solid var(--border); display: flex; gap: 8px; align-items: flex-end; }
 
     /* ═══ USER MODAL ═══ */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-      display: flex; align-items: center; justify-content: center; z-index: 100;
-    }
-    .modal-box {
-      background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border2);
-      padding: 24px; width: 310px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
+    .modal-box { background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border2); padding: 24px; width: 310px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
     .modal-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
     .modal-title { font-size: 16px; font-weight: 600; }
     .modal-sub { font-size: 12px; color: var(--text2); }
     .user-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-    .uoption {
-      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-      border: 0.5px solid var(--border2); border-radius: var(--radius);
-      cursor: pointer; transition: all 0.15s; background: var(--bg);
-    }
+    .uoption { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius); cursor: pointer; transition: all 0.15s; background: var(--bg); }
     .uoption:hover { border-color: var(--teal); background: var(--teal-l); }
     .uname { font-size: 13px; font-weight: 500; }
     .urole { font-size: 11px; color: var(--text2); }
@@ -288,7 +229,7 @@
     .new-user input { flex: 1; padding: 8px 10px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 13px; color: var(--text); background: var(--bg2); outline: none; font-family: var(--font); }
 
     /* ═══ LOADING ═══ */
-    .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; gap: 12px; color: var(--text2); font-size: 13px; }
+    .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; gap: 12px; color: var(--text2); font-size: 13px; text-align: center; padding: 20px; }
     .spinner { width: 28px; height: 28px; border: 2.5px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -296,12 +237,17 @@
     @media (max-width: 680px) {
       .sidebar { display: none; }
       .logo-badge { display: none; }
-      .tab { padding: 10px 11px; font-size: 12px; }
-      .day-view, .week-view, .cal-view { padding: 12px; }
+      .tab { padding: 10px 10px; font-size: 12px; }
+      .filters-bar { padding: 7px 12px; gap: 6px; }
+      .fbtn { padding: 4px 10px; font-size: 11px; }
+      .filter-sep { display: none; }
+      .day-view, .week-view, .cal-view { padding: 10px; }
       .day-title { font-size: 18px; }
-      .res-card { padding: 12px 14px; }
+      .res-card { padding: 12px 12px 12px 14px; }
       .res-card-prop { font-size: 14px; }
-      .cal-day { min-height: 52px; }
+      .cal-day { min-height: 54px; padding: 4px 3px; }
+      .dn { font-size: 11px; }
+      .cal-pill { font-size: 8px; padding: 1px 4px; }
     }
   </style>
 </head>
@@ -377,17 +323,26 @@
     <button class="tab"        id="tab-calendar" onclick="switchTab('calendar',this)">Calendario</button>
   </div>
 
+  <!-- FILTERS BAR -->
+  <div class="filters-bar" id="filtersBar">
+    <span class="filter-label">Ver:</span>
+    <button class="fbtn active-ci" id="f-ci" onclick="toggleFilter('ci')">↓ Check-in</button>
+    <button class="fbtn active-co" id="f-co" onclick="toggleFilter('co')">↑ Check-out</button>
+    <div class="filter-sep"></div>
+    <button class="fbtn active-ab" id="f-ab" onclick="toggleFilter('ab')">Airbnb</button>
+    <button class="fbtn active-bk" id="f-bk" onclick="toggleFilter('bk')">Booking</button>
+  </div>
+
   <!-- MAIN -->
   <div class="main">
     <div class="content" id="viewContent">
-      <div class="loading-wrap"><div class="spinner"></div><span>Cargando reservas...</span></div>
+      <div class="loading-wrap"><div class="spinner"></div><span>Cargando reservas...<br><small style="color:var(--text3);">Puede tardar ~30s la primera vez</small></span></div>
     </div>
-    <!-- SIDEBAR (desktop) -->
     <div class="sidebar">
       <div class="sb-empty" id="sbEmpty">
         <i class="ti ti-calendar-event"></i>
         <p>Selecciona una reserva</p>
-        <small>Toca cualquier check-in o check-out para ver los detalles y notas del equipo</small>
+        <small>Toca cualquier check-in o check-out para ver detalles y notas del equipo</small>
       </div>
       <div id="sbContent" style="display:none;flex-direction:column;height:100%;">
         <div class="sb-head">
@@ -414,13 +369,11 @@
 </div>
 
 <script>
-// ── EQUIPO ────────────────────────────────────────────────────────────────────
 const TEAM = [
-  { name: 'Mike B.',     role: 'Administrador',   color: '#185FA5', bg: '#E6F1FB' },
-  { name: 'Claudia',    role: 'Coord. Cleaners',  color: '#1D9E75', bg: '#E1F5EE' },
-  { name: 'Mike David', role: 'Mantenimiento',    color: '#BA7517', bg: '#FAEEDA' },
+  { name: 'Mike B.',     role: 'Administrador',  color: '#185FA5', bg: '#E6F1FB' },
+  { name: 'Claudia',    role: 'Coord. Cleaners', color: '#1D9E75', bg: '#E1F5EE' },
+  { name: 'Mike David', role: 'Mantenimiento',   color: '#BA7517', bg: '#FAEEDA' },
 ];
-// ─────────────────────────────────────────────────────────────────────────────
 
 const MONTHS   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MONTHS_S = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -436,114 +389,139 @@ let commentsCache = {};
 let calMonth      = new Date().getMonth();
 let calYear       = new Date().getFullYear();
 let weekOffset    = 0;
+let customDate    = null; // for calendar day drill-down
+
+// filters
+let fCI = true, fCO = true, fAB = true, fBK = true;
 
 // ── SUPABASE ──────────────────────────────────────────────────────────────────
-async function sbFetch(path, opts = {}) {
-  const r = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+async function sbFetch(path, opts={}) {
+  const r = await fetch(SUPABASE_URL+'/rest/v1/'+path, {
     ...opts,
-    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation', ...(opts.headers||{}) }
+    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})}
   });
-  if (!r.ok) throw new Error(await r.text());
+  if(!r.ok) throw new Error(await r.text());
   return r.json();
 }
 async function loadComments(id) {
-  try {
-    const rows = await sbFetch(`comments?reservation_id=eq.${encodeURIComponent(id)}&order=created_at.asc`);
-    commentsCache[id] = rows;
-    return rows;
-  } catch(e) { return []; }
+  try { const rows=await sbFetch(`comments?reservation_id=eq.${encodeURIComponent(id)}&order=created_at.asc`); commentsCache[id]=rows; return rows; }
+  catch(e){ return []; }
 }
-async function saveComment(id, propName, text) {
-  const row = await sbFetch('comments', { method:'POST', body: JSON.stringify({ reservation_id:id, prop_name:propName, author:currentUser.name, text }) });
-  if (!commentsCache[id]) commentsCache[id] = [];
-  commentsCache[id].push(row[0]);
-  return row[0];
+async function saveComment(id,propName,text) {
+  const row=await sbFetch('comments',{method:'POST',body:JSON.stringify({reservation_id:id,prop_name:propName,author:currentUser.name,text})});
+  if(!commentsCache[id]) commentsCache[id]=[];
+  commentsCache[id].push(row[0]); return row[0];
 }
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 async function loadData() {
   try {
-    const res  = await fetch(BACKEND_URL + '/reservations');
-    const data = await res.json();
-    reservations = data.reservations || [];
-    properties   = data.properties   || [];
-    document.getElementById('propBadge').textContent = properties.length + ' props';
+    const res=await fetch(BACKEND_URL+'/reservations');
+    const data=await res.json();
+    reservations=data.reservations||[];
+    properties=data.properties||[];
+    document.getElementById('propBadge').textContent=properties.length+' props';
     updateTabCounts();
     renderView();
   } catch(e) {
-    document.getElementById('viewContent').innerHTML = `<div class="loading-wrap" style="color:#E24B4A;"><i class="ti ti-alert-circle" style="font-size:36px;"></i><span>Error al conectar.<br>Render puede estar iniciando, espera 30s y recarga.</span></div>`;
+    document.getElementById('viewContent').innerHTML=`<div class="loading-wrap" style="color:#D94040;"><i class="ti ti-alert-circle" style="font-size:36px;"></i><span>Error al conectar.<br><small>Render puede estar iniciando. Espera 30 segundos y recarga la página.</small></span></div>`;
   }
 }
 
 function getEventsForDate(date) {
-  const ds = date.toDateString();
-  return reservations.filter(r => {
-    const ci = new Date(r.checkin  + 'T12:00:00').toDateString() === ds;
-    const co = new Date(r.checkout + 'T12:00:00').toDateString() === ds;
-    return ci || co;
-  }).map(r => ({
+  const ds=date.toDateString();
+  return reservations.filter(r=>{
+    if(!fAB && r.ota==='airbnb') return false;
+    if(!fBK && r.ota==='booking') return false;
+    const ci=new Date(r.checkin+'T12:00:00').toDateString()===ds;
+    const co=new Date(r.checkout+'T12:00:00').toDateString()===ds;
+    if(!fCI && ci && !co) return false;
+    if(!fCO && co && !ci) return false;
+    return ci||co;
+  }).map(r=>({
     ...r,
-    isCi: new Date(r.checkin + 'T12:00:00').toDateString() === ds,
-    isCo: new Date(r.checkout + 'T12:00:00').toDateString() === ds,
+    isCi:new Date(r.checkin+'T12:00:00').toDateString()===ds,
+    isCo:new Date(r.checkout+'T12:00:00').toDateString()===ds,
   }));
 }
 
 function updateTabCounts() {
-  const today    = new Date();
-  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate()+1);
-  const te = getEventsForDate(today).length;
-  const me = getEventsForDate(tomorrow).length;
-  const setCount = (id, n) => {
-    const el = document.getElementById(id);
-    el.textContent = n;
-    el.className = 'tab-count' + (n === 0 ? ' zero' : '');
-  };
-  setCount('cnt-hoy',    te);
-  setCount('cnt-manana', me);
+  const today=new Date();
+  const tomorrow=new Date(); tomorrow.setDate(today.getDate()+1);
+  const setC=(id,n)=>{ const el=document.getElementById(id); el.textContent=n; el.className='tab-count'+(n===0?' zero':''); };
+  setC('cnt-hoy',   getEventsForDate(today).length);
+  setC('cnt-manana',getEventsForDate(tomorrow).length);
+}
+
+// ── FILTERS ───────────────────────────────────────────────────────────────────
+function toggleFilter(f) {
+  if(f==='ci') fCI=!fCI;
+  else if(f==='co') fCO=!fCO;
+  else if(f==='ab') fAB=!fAB;
+  else if(f==='bk') fBK=!fBK;
+  const map={ci:['f-ci','active-ci'],co:['f-co','active-co'],ab:['f-ab','active-ab'],bk:['f-bk','active-bk']};
+  const [id,cls]=map[f];
+  const on={ci:fCI,co:fCO,ab:fAB,bk:fBK}[f];
+  const btn=document.getElementById(id);
+  on ? btn.classList.add(cls) : btn.classList.remove(cls);
+  updateTabCounts();
+  renderView();
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderView() {
-  updateTabCounts();
-  if      (activeTab === 'hoy')      renderDayView(new Date(), 'Hoy');
-  else if (activeTab === 'manana')   { const t = new Date(); t.setDate(t.getDate()+1); renderDayView(t, 'Mañana'); }
-  else if (activeTab === 'semana')   renderWeekView();
-  else if (activeTab === 'calendar') renderCalView();
+  // hide filters bar on calendar tab
+  document.getElementById('filtersBar').style.display = activeTab==='calendar' ? 'none' : 'flex';
+  if(activeTab==='hoy') {
+    customDate=null;
+    renderDayView(new Date(),'Hoy');
+  } else if(activeTab==='manana') {
+    customDate=null;
+    const t=new Date(); t.setDate(t.getDate()+1);
+    renderDayView(t,'Mañana');
+  } else if(activeTab==='semana') {
+    if(customDate){ renderDayView(customDate, dateLabel(customDate)); }
+    else renderWeekView();
+  } else if(activeTab==='calendar') {
+    renderCalView();
+  }
 }
 
 function dateLabel(date) {
   return `${DAYS_F[date.getDay()]} ${date.getDate()} de ${MONTHS[date.getMonth()]}`;
 }
 
+// ── DAY VIEW ──────────────────────────────────────────────────────────────────
 function renderDayView(date, title) {
-  const evts = getEventsForDate(date);
-  const checkins  = evts.filter(e => e.isCi);
-  const checkouts = evts.filter(e => e.isCo);
-  const cont = document.getElementById('viewContent');
-  if (!evts.length) {
-    cont.innerHTML = `<div class="day-view"><div class="day-header"><div class="day-title">${title}</div><div class="day-sub">${dateLabel(date)}</div></div><div class="empty-day"><i class="ti ti-coffee"></i><p>Sin movimientos</p><small>No hay check-ins ni check-outs ${title.toLowerCase()}</small></div></div>`;
+  const evts=getEventsForDate(date);
+  const checkins =evts.filter(e=>e.isCi);
+  const checkouts=evts.filter(e=>e.isCo);
+  const cont=document.getElementById('viewContent');
+  const backBtn = customDate ? `<button onclick="customDate=null;renderWeekView();" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px;font-family:var(--font);"><i class="ti ti-arrow-left" style="font-size:15px;"></i> Volver a semana</button>` : '';
+  if(!evts.length) {
+    cont.innerHTML=`<div class="day-view">${backBtn}<div class="day-header"><div class="day-title">${title}</div><div class="day-sub">${dateLabel(date)}</div></div><div class="empty-day"><i class="ti ti-coffee"></i><p>Sin movimientos</p><small>No hay check-ins ni check-outs ${title==='Hoy'?'hoy':title==='Mañana'?'mañana':'este día'}</small></div></div>`;
     return;
   }
-  let html = `<div class="day-view"><div class="day-header"><div class="day-title">${title}</div><div class="day-sub">${dateLabel(date)}</div></div>`;
-  if (checkins.length) {
-    html += `<div class="section-label"><i class="ti ti-arrow-down-circle" style="font-size:12px;margin-right:4px;"></i>Check-ins · ${checkins.length}</div>`;
-    checkins.forEach(r => { html += resCardHTML(r, 'ci'); });
+  let html=`<div class="day-view">${backBtn}<div class="day-header"><div class="day-title">${title}</div><div class="day-sub">${dateLabel(date)}</div></div>`;
+  if(checkins.length) {
+    html+=`<div class="section-label ci"><i class="ti ti-arrow-down-circle"></i>Check-ins · ${checkins.length}</div>`;
+    checkins.forEach(r=>{html+=resCardHTML(r,'ci');});
   }
-  if (checkouts.length) {
-    html += `<div class="section-label"><i class="ti ti-arrow-up-circle" style="font-size:12px;margin-right:4px;"></i>Check-outs · ${checkouts.length}</div>`;
-    checkouts.forEach(r => { html += resCardHTML(r, 'co'); });
+  if(checkouts.length) {
+    html+=`<div class="section-label co"><i class="ti ti-arrow-up-circle"></i>Check-outs · ${checkouts.length}</div>`;
+    checkouts.forEach(r=>{html+=resCardHTML(r,'co');});
   }
-  html += '</div>';
-  cont.innerHTML = html;
+  html+='</div>';
+  cont.innerHTML=html;
 }
 
-function resCardHTML(r, type) {
-  const otaBadge  = r.ota === 'airbnb' ? `<span class="badge ab">Airbnb</span>` : `<span class="badge bk">Booking</span>`;
-  const typeBadge = type === 'ci' ? `<span class="badge ci">↓ Check-in</span>` : `<span class="badge co">↑ Check-out</span>`;
-  const hasC  = (commentsCache[r.id]||[]).length > 0;
-  const ci    = new Date(r.checkin  + 'T12:00:00');
-  const co    = new Date(r.checkout + 'T12:00:00');
-  return `<div class="res-card" onclick="openEvent('${r.id}')">
+function resCardHTML(r,type) {
+  const otaBadge=r.ota==='airbnb'?`<span class="badge ab">Airbnb</span>`:`<span class="badge bk">Booking</span>`;
+  const typeBadge=type==='ci'?`<span class="badge ci">↓ Check-in</span>`:`<span class="badge co">↑ Check-out</span>`;
+  const hasC=(commentsCache[r.id]||[]).length>0;
+  const ci=new Date(r.checkin+'T12:00:00');
+  const co=new Date(r.checkout+'T12:00:00');
+  return `<div class="res-card ${type}" onclick="openEvent('${r.id}')">
     <div class="res-card-top">
       <div class="res-card-prop">${r.propName}</div>
       <div class="res-card-badges">${typeBadge}${otaBadge}</div>
@@ -554,223 +532,204 @@ function resCardHTML(r, type) {
       <div class="res-card-item"><div class="res-card-lbl">Noches</div><div class="res-card-val">${r.nights}</div></div>
       <div class="res-card-item"><div class="res-card-lbl">Huésped</div><div class="res-card-val">${r.guest||'—'}</div></div>
     </div>
-    ${hasC ? `<div class="res-card-comment"><i class="ti ti-message-circle" style="font-size:13px;color:var(--coral);"></i> ${(commentsCache[r.id]||[]).length} nota${(commentsCache[r.id]||[]).length>1?'s':''}</div>` : ''}
+    ${hasC?`<div class="res-card-note"><i class="ti ti-message-circle" style="font-size:13px;"></i>${(commentsCache[r.id]||[]).length} nota${(commentsCache[r.id]||[]).length>1?'s':''} del equipo</div>`:''}
   </div>`;
 }
 
+// ── WEEK VIEW ─────────────────────────────────────────────────────────────────
 function renderWeekView() {
-  const today = new Date();
-  const start = new Date(today);
-  start.setDate(today.getDate() + weekOffset * 7);
-  // Start from Monday of that week
-  const dow = start.getDay();
-  const monday = new Date(start);
-  monday.setDate(start.getDate() - (dow === 0 ? 6 : dow - 1));
+  customDate=null;
+  const today=new Date();
+  const base=new Date(today); base.setDate(today.getDate()+weekOffset*7);
+  const dow=base.getDay();
+  const monday=new Date(base); monday.setDate(base.getDate()-(dow===0?6:dow-1));
+  const days=[]; for(let i=0;i<7;i++){const d=new Date(monday);d.setDate(monday.getDate()+i);days.push(d);}
+  const label=`${days[0].getDate()} ${MONTHS_S[days[0].getMonth()]} — ${days[6].getDate()} ${MONTHS_S[days[6].getMonth()]} ${days[6].getFullYear()}`;
 
-  const days = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(monday);
-    d.setDate(monday.getDate() + i);
-    days.push(d);
-  }
-
-  const label = `${days[0].getDate()} ${MONTHS_S[days[0].getMonth()]} — ${days[6].getDate()} ${MONTHS_S[days[6].getMonth()]} ${days[6].getFullYear()}`;
-
-  let html = `<div class="week-view">
+  let html=`<div class="week-view">
     <div class="week-nav">
       <button onclick="weekOffset--;renderView()"><i class="ti ti-chevron-left"></i></button>
       <div class="week-title">${label}</div>
-      <button onclick="weekOffset=0;renderView()" style="font-size:11px;width:auto;padding:0 10px;">Hoy</button>
+      <button class="today-btn" onclick="weekOffset=0;renderView()">Hoy</button>
       <button onclick="weekOffset++;renderView()"><i class="ti ti-chevron-right"></i></button>
     </div>`;
 
-  days.forEach(day => {
-    const isToday = day.toDateString() === today.toDateString();
-    const evts = getEventsForDate(day);
-    html += `<div class="week-day">
-      <div class="week-day-header ${isToday?'week-day-today':''}">
+  days.forEach(day=>{
+    const isToday=day.toDateString()===today.toDateString();
+    const evts=getEventsForDate(day);
+    const cis=evts.filter(e=>e.isCi);
+    const cos=evts.filter(e=>e.isCo);
+    html+=`<div class="week-day ${isToday?'week-today':''}">
+      <div class="week-day-header">
         <div class="week-day-num">${day.getDate()}</div>
         <div class="week-day-name">${DAYS_F[day.getDay()]} ${MONTHS_S[day.getMonth()]}</div>
-        ${evts.length ? `<span class="badge ci" style="margin-left:auto;font-size:10px;">${evts.length} mov.</span>` : ''}
+        ${cis.length?`<span class="badge ci" style="font-size:10px;">↓ ${cis.length}</span>`:''}
+        ${cos.length?`<span class="badge co" style="font-size:10px;">↑ ${cos.length}</span>`:''}
       </div>`;
-    if (!evts.length) {
-      html += `<div class="week-no-events">Sin movimientos</div>`;
+    if(!evts.length) {
+      html+=`<div class="week-no-events">Sin movimientos</div>`;
     } else {
-      evts.forEach(r => {
-        const isCi = r.isCi;
-        const dotColor = r.ota==='airbnb' ? '#E8484C' : '#378ADD';
-        const typeBg  = isCi ? 'var(--teal-l)'  : 'var(--amber-l)';
-        const typeCol = isCi ? 'var(--teal-d)'   : 'var(--amber)';
-        html += `<div class="week-event" onclick="openEvent('${r.id}')">
-          <div class="week-event-dot" style="background:${dotColor};"></div>
+      // Show check-ins first (green), then check-outs (red)
+      [...cis,...cos].forEach(r=>{
+        const isCi=r.isCi&&!r.isCo||cis.includes(r);
+        const type=cis.includes(r)?'ci':'co';
+        html+=`<div class="week-event ${type}" onclick="openEvent('${r.id}')">
           <div class="week-event-info">
             <div class="week-event-prop">${r.propName}</div>
             <div class="week-event-sub">${r.nights} noches · ${r.guest||'Huésped'}</div>
           </div>
           <div class="week-event-right">
-            <span class="badge" style="background:${typeBg};color:${typeCol};font-size:10px;">${isCi?'↓ In':'↑ Out'}</span>
-            <span class="badge ${r.ota==='airbnb'?'ab':'bk'}" style="font-size:10px;">${r.ota==='airbnb'?'AB':'BK'}</span>
+            <span class="badge ${type}" style="font-size:10px;">${type==='ci'?'↓ Check-in':'↑ Check-out'}</span>
+            <span class="badge ${r.ota==='airbnb'?'ab':'bk'}" style="font-size:10px;">${r.ota==='airbnb'?'Airbnb':'Booking'}</span>
           </div>
         </div>`;
       });
     }
-    html += `</div>`;
+    html+='</div>';
   });
-  html += '</div>';
-  document.getElementById('viewContent').innerHTML = html;
+  html+='</div>';
+  document.getElementById('viewContent').innerHTML=html;
 }
 
+// ── CALENDAR VIEW ─────────────────────────────────────────────────────────────
 function renderCalView() {
-  const label   = `${MONTHS[calMonth]} ${calYear}`;
-  const first   = new Date(calYear, calMonth, 1).getDay();
-  const dim     = new Date(calYear, calMonth+1, 0).getDate();
-  const prevDim = new Date(calYear, calMonth, 0).getDate();
-  const today   = new Date();
+  const first=new Date(calYear,calMonth,1).getDay();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const prevDim=new Date(calYear,calMonth,0).getDate();
+  const today=new Date();
+  let cells=[];
+  for(let i=first-1;i>=0;i--) cells.push({d:prevDim-i,other:true,date:new Date(calYear,calMonth-1,prevDim-i)});
+  for(let d=1;d<=dim;d++)     cells.push({d,other:false,date:new Date(calYear,calMonth,d)});
+  while(cells.length%7){const n=cells.length-dim-first+1;cells.push({d:n,other:true,date:new Date(calYear,calMonth+1,n)});}
 
-  let cells = [];
-  for (let i=first-1;i>=0;i--) cells.push({d:prevDim-i,other:true,date:new Date(calYear,calMonth-1,prevDim-i)});
-  for (let d=1;d<=dim;d++)     cells.push({d,other:false,date:new Date(calYear,calMonth,d)});
-  while (cells.length%7) { const n=cells.length-dim-first+1; cells.push({d:n,other:true,date:new Date(calYear,calMonth+1,n)}); }
-
-  let html = `<div class="cal-view">
+  let html=`<div class="cal-view">
     <div class="cal-nav-row">
-      <button onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderView()"><i class="ti ti-chevron-left"></i></button>
-      <div class="cal-month-label">${label}</div>
-      <button onclick="goToday()">Hoy</button>
-      <button onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderView()"><i class="ti ti-chevron-right"></i></button>
+      <button onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalView()"><i class="ti ti-chevron-left"></i></button>
+      <div class="cal-month-label">${MONTHS[calMonth]} ${calYear}</div>
+      <button class="today-btn" onclick="calMonth=new Date().getMonth();calYear=new Date().getFullYear();renderCalView()">Hoy</button>
+      <button onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalView()"><i class="ti ti-chevron-right"></i></button>
     </div>
     <div class="cal-grid">
       <div class="cal-weekdays">${DAYS_S.map(d=>`<div class="cal-wd">${d}</div>`).join('')}</div>
       <div class="cal-days">`;
 
-  cells.forEach(cell => {
-    const isToday = !cell.other && cell.date.toDateString()===today.toDateString();
-    const evts    = getEventsForDate(cell.date);
-    const ciEvts  = evts.filter(e=>e.isCi);
-    const coEvts  = evts.filter(e=>e.isCo);
-    const hasC    = evts.some(r=>(commentsCache[r.id]||[]).length>0);
-    const firstId = evts.length ? evts[0].id : '';
+  cells.forEach(cell=>{
+    const isToday=!cell.other&&cell.date.toDateString()===today.toDateString();
+    // For calendar always show all events regardless of filters
+    const allEvts=reservations.filter(r=>{
+      const ds=cell.date.toDateString();
+      const ci=new Date(r.checkin+'T12:00:00').toDateString()===ds;
+      const co=new Date(r.checkout+'T12:00:00').toDateString()===ds;
+      return ci||co;
+    });
+    const ciCount=allEvts.filter(r=>new Date(r.checkin+'T12:00:00').toDateString()===cell.date.toDateString()).length;
+    const coCount=allEvts.filter(r=>new Date(r.checkout+'T12:00:00').toDateString()===cell.date.toDateString()).length;
+    const hasNote=allEvts.some(r=>(commentsCache[r.id]||[]).length>0);
+    const hasEvts=allEvts.length>0;
+    const dateStr=cell.date.toISOString().slice(0,10);
 
-    let dotsHTML = '';
-    ciEvts.slice(0,4).forEach(()=>{ dotsHTML += `<div class="cal-dot" style="background:var(--teal);"></div>`; });
-    coEvts.slice(0,4).forEach(()=>{ dotsHTML += `<div class="cal-dot" style="background:var(--amber);"></div>`; });
-
-    const total = evts.length;
-    html += `<div class="cal-day${cell.other?' other':''}${isToday?' today':''}" onclick="${total?`openDayFromCal('${cell.date.toISOString().slice(0,10)}')`:''}" style="${!total?'cursor:default;':''}">
+    html+=`<div class="cal-day${cell.other?' other':''}${isToday?' today':''}${hasEvts?' has-events':''}" 
+      ${hasEvts&&!cell.other?`onclick="openCalDay('${dateStr}')"`:''} 
+      style="${!hasEvts||cell.other?'cursor:default;':''}">
       <div class="dn">${cell.d}</div>
-      ${hasC?'<div class="has-comment-dot"></div>':''}
-      <div class="cal-dot-row">${dotsHTML}</div>
-      ${total>0?`<div class="cal-count">${total} mov.</div>`:''}
+      ${hasNote?'<div class="has-note-dot"></div>':''}
+      ${ciCount>0?`<div class="cal-ci-row"><span class="cal-pill ci">↓ ${ciCount} in</span></div>`:''}
+      ${coCount>0?`<div class="cal-co-row"><span class="cal-pill co">↑ ${coCount} out</span></div>`:''}
     </div>`;
   });
-
-  html += `</div></div></div>`;
-  document.getElementById('viewContent').innerHTML = html;
+  html+='</div></div></div>';
+  document.getElementById('viewContent').innerHTML=html;
 }
 
-function openDayFromCal(dateStr) {
-  const date = new Date(dateStr + 'T12:00:00');
-  const evts = getEventsForDate(date);
-  if (!evts.length) return;
-  // Switch to week view centered on that date, or show a day modal
-  const today = new Date();
-  const diff  = Math.round((date - today) / (1000*60*60*24));
-  weekOffset  = Math.floor(diff / 7);
-  switchTab('semana', document.getElementById('tab-semana'));
-}
-
-function goToday() {
-  const now = new Date();
-  calMonth = now.getMonth(); calYear = now.getFullYear();
-  renderCalView();
+function openCalDay(dateStr) {
+  const date=new Date(dateStr+'T12:00:00');
+  customDate=date;
+  // Calculate week offset to center on this date
+  const today=new Date();
+  const diff=Math.round((date-today)/(1000*60*60*24));
+  weekOffset=Math.floor(diff/7);
+  switchTab('semana',document.getElementById('tab-semana'));
+  // Immediately show day detail
+  renderDayView(date, dateLabel(date));
 }
 
 // ── EVENT DETAIL ──────────────────────────────────────────────────────────────
 async function openEvent(id) {
-  selectedRes = reservations.find(r=>r.id===id);
-  if (!selectedRes) return;
-  const r  = selectedRes;
-  const ci = new Date(r.checkin  + 'T12:00:00');
-  const co = new Date(r.checkout + 'T12:00:00');
-  const otaBadge  = r.ota==='airbnb' ? `<span class="badge ab">Airbnb</span>` : `<span class="badge bk">Booking</span>`;
+  selectedRes=reservations.find(r=>r.id===id);
+  if(!selectedRes) return;
+  const r=selectedRes;
+  const ci=new Date(r.checkin+'T12:00:00');
+  const co=new Date(r.checkout+'T12:00:00');
+  const otaBadge=r.ota==='airbnb'?`<span class="badge ab">Airbnb</span>`:`<span class="badge bk">Booking</span>`;
+  const typeBadgeCi=`<span class="badge ci">↓ Check-in ${ci.getDate()}/${ci.getMonth()+1}</span>`;
+  const typeBadgeCo=`<span class="badge co">↑ Check-out ${co.getDate()}/${co.getMonth()+1}</span>`;
 
-  const isMob = window.innerWidth <= 680;
-  if (isMob) {
-    document.getElementById('mobProp').textContent   = r.propName;
-    document.getElementById('mobBadges').innerHTML   = `<span class="badge ci">↓ Check-in</span><span class="badge co">↑ Check-out</span>${otaBadge}`;
-    document.getElementById('mobCi').textContent     = `${ci.getDate()} ${MONTHS_S[ci.getMonth()]}`;
-    document.getElementById('mobCo').textContent     = `${co.getDate()} ${MONTHS_S[co.getMonth()]}`;
-    document.getElementById('mobNights').textContent = `${r.nights} noche${r.nights>1?'s':''}`;
-    document.getElementById('mobGuest').textContent  = r.guest || '—';
+  if(window.innerWidth<=680) {
+    document.getElementById('mobProp').textContent=r.propName;
+    document.getElementById('mobBadges').innerHTML=typeBadgeCi+typeBadgeCo+otaBadge;
+    document.getElementById('mobCi').textContent=`${ci.getDate()} ${MONTHS_S[ci.getMonth()]}`;
+    document.getElementById('mobCo').textContent=`${co.getDate()} ${MONTHS_S[co.getMonth()]}`;
+    document.getElementById('mobNights').textContent=`${r.nights} noche${r.nights>1?'s':''}`;
+    document.getElementById('mobGuest').textContent=r.guest||'—';
     renderMobComments(commentsCache[r.id]||[]);
     document.getElementById('mobOverlay').classList.add('open');
-    loadComments(r.id).then(c => renderMobComments(c));
+    loadComments(r.id).then(c=>renderMobComments(c));
   } else {
-    document.getElementById('sbEmpty').style.display = 'none';
-    const sc = document.getElementById('sbContent');
-    sc.style.display = 'flex';
-    document.getElementById('sbProp').textContent   = r.propName;
-    document.getElementById('sbBadges').innerHTML   = `<span class="badge ci">↓ In</span><span class="badge co">↑ Out</span>${otaBadge}`;
-    document.getElementById('sbCi').textContent     = `${ci.getDate()} ${MONTHS_S[ci.getMonth()]}`;
-    document.getElementById('sbCo').textContent     = `${co.getDate()} ${MONTHS_S[co.getMonth()]}`;
-    document.getElementById('sbNights').textContent = `${r.nights} noche${r.nights>1?'s':''}`;
-    document.getElementById('sbGuest').textContent  = r.guest || '—';
+    document.getElementById('sbEmpty').style.display='none';
+    document.getElementById('sbContent').style.display='flex';
+    document.getElementById('sbProp').textContent=r.propName;
+    document.getElementById('sbBadges').innerHTML=typeBadgeCi+typeBadgeCo+otaBadge;
+    document.getElementById('sbCi').textContent=`${ci.getDate()} ${MONTHS_S[ci.getMonth()]}`;
+    document.getElementById('sbCo').textContent=`${co.getDate()} ${MONTHS_S[co.getMonth()]}`;
+    document.getElementById('sbNights').textContent=`${r.nights} noche${r.nights>1?'s':''}`;
+    document.getElementById('sbGuest').textContent=r.guest||'—';
     renderDesktopComments(commentsCache[r.id]||[]);
-    loadComments(r.id).then(c => renderDesktopComments(c));
+    loadComments(r.id).then(c=>renderDesktopComments(c));
   }
 }
 
 function commentHTML(c) {
-  const u   = TEAM.find(t=>t.name===c.author)||{color:'var(--teal-d)',bg:'var(--teal-l)'};
-  const ts  = new Date(c.created_at);
-  const tstr= ts.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'});
-  const dstr= ts.toLocaleDateString('es-CL',{day:'numeric',month:'short'});
+  const u=TEAM.find(t=>t.name===c.author)||{color:'var(--teal-d)',bg:'var(--teal-l)'};
+  const ts=new Date(c.created_at);
   return `<div class="comment">
     <div class="cav" style="background:${u.bg};color:${u.color};">${(c.author||'?').slice(0,2).toUpperCase()}</div>
-    <div class="cbody"><div class="cmeta"><span class="cauthor">${c.author}</span><span class="ctime">${dstr} ${tstr}</span></div><div class="ctext">${c.text}</div></div>
+    <div class="cbody"><div class="cmeta"><span class="cauthor">${c.author}</span><span class="ctime">${ts.toLocaleDateString('es-CL',{day:'numeric',month:'short'})} ${ts.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}</span></div><div class="ctext">${c.text}</div></div>
   </div>`;
 }
 function renderDesktopComments(cmts) {
-  const list = document.getElementById('commentList');
-  list.innerHTML = cmts.length ? cmts.map(commentHTML).join('') : `<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas.</div>`;
-  const sb = document.getElementById('sbComments'); sb.scrollTop = sb.scrollHeight;
+  const list=document.getElementById('commentList');
+  list.innerHTML=cmts.length?cmts.map(commentHTML).join(''):`<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas del equipo.</div>`;
+  const sb=document.getElementById('sbComments'); sb.scrollTop=sb.scrollHeight;
 }
 function renderMobComments(cmts) {
-  const list = document.getElementById('mobCommentList');
-  list.innerHTML = cmts.length ? cmts.map(commentHTML).join('') : `<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas.</div>`;
-  const mc = document.querySelector('.mob-comments'); if(mc) mc.scrollTop = mc.scrollHeight;
+  const list=document.getElementById('mobCommentList');
+  list.innerHTML=cmts.length?cmts.map(commentHTML).join(''):`<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas del equipo.</div>`;
+  const mc=document.querySelector('.mob-comments'); if(mc) mc.scrollTop=mc.scrollHeight;
 }
 
 async function sendComment() {
-  if (!currentUser) { openModal(); return; }
-  if (!selectedRes) return;
-  const inp = document.getElementById('commentInput');
-  const txt = inp.value.trim(); if (!txt) return;
-  inp.value = ''; inp.disabled = true;
-  try { await saveComment(selectedRes.id, selectedRes.propName, txt); renderDesktopComments(commentsCache[selectedRes.id]||[]); renderView(); }
-  catch(e) { alert('Error guardando nota.'); }
-  finally { inp.disabled=false; inp.focus(); }
+  if(!currentUser){openModal();return;} if(!selectedRes) return;
+  const inp=document.getElementById('commentInput'); const txt=inp.value.trim(); if(!txt) return;
+  inp.value=''; inp.disabled=true;
+  try{await saveComment(selectedRes.id,selectedRes.propName,txt);renderDesktopComments(commentsCache[selectedRes.id]||[]);renderView();}
+  catch(e){alert('Error guardando nota.');}
+  finally{inp.disabled=false;inp.focus();}
 }
 async function sendMobComment() {
-  if (!currentUser) { openModal(); return; }
-  if (!selectedRes) return;
-  const inp = document.getElementById('mobCommentInput');
-  const txt = inp.value.trim(); if (!txt) return;
-  inp.value = ''; inp.disabled = true;
-  try { await saveComment(selectedRes.id, selectedRes.propName, txt); renderMobComments(commentsCache[selectedRes.id]||[]); renderView(); }
-  catch(e) { alert('Error guardando nota.'); }
-  finally { inp.disabled=false; inp.focus(); }
+  if(!currentUser){openModal();return;} if(!selectedRes) return;
+  const inp=document.getElementById('mobCommentInput'); const txt=inp.value.trim(); if(!txt) return;
+  inp.value=''; inp.disabled=true;
+  try{await saveComment(selectedRes.id,selectedRes.propName,txt);renderMobComments(commentsCache[selectedRes.id]||[]);renderView();}
+  catch(e){alert('Error guardando nota.');}
+  finally{inp.disabled=false;inp.focus();}
 }
-
 function closeMobSheet(e) {
-  if (!e || e.target===document.getElementById('mobOverlay')) {
-    document.getElementById('mobOverlay').classList.remove('open');
-  }
+  if(!e||e.target===document.getElementById('mobOverlay')) document.getElementById('mobOverlay').classList.remove('open');
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
-function switchTab(tab, btn) {
-  activeTab = tab;
+function switchTab(tab,btn) {
+  activeTab=tab; customDate=null;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   renderView();
@@ -778,31 +737,30 @@ function switchTab(tab, btn) {
 
 // ── USER ──────────────────────────────────────────────────────────────────────
 function buildUserOptions() {
-  document.getElementById('userOptions').innerHTML = TEAM.map(u =>
+  document.getElementById('userOptions').innerHTML=TEAM.map(u=>
     `<div class="uoption" onclick="selectUser('${u.name}')">
       <div class="cav" style="background:${u.bg};color:${u.color};">${u.name.slice(0,2).toUpperCase()}</div>
       <div><div class="uname">${u.name}</div><div class="urole">${u.role}</div></div>
-    </div>`
-  ).join('');
+    </div>`).join('');
 }
-function openModal()  { document.getElementById('userModal').style.display='flex'; }
+function openModal(){document.getElementById('userModal').style.display='flex';}
 function selectUser(name) {
-  const u = TEAM.find(t=>t.name===name)||{name,role:'Equipo',color:'var(--teal-d)',bg:'var(--teal-l)'};
-  currentUser = u;
-  const av = document.getElementById('topAv');
+  const u=TEAM.find(t=>t.name===name)||{name,role:'Equipo',color:'var(--teal-d)',bg:'var(--teal-l)'};
+  currentUser=u;
+  const av=document.getElementById('topAv');
   av.textContent=name.slice(0,2).toUpperCase(); av.style.background=u.bg; av.style.color=u.color;
   document.getElementById('topName').textContent=name;
   document.getElementById('userModal').style.display='none';
 }
 function addUser() {
-  const n = document.getElementById('newUserInput').value.trim(); if(!n) return;
+  const n=document.getElementById('newUserInput').value.trim(); if(!n) return;
   TEAM.push({name:n,role:'Equipo',color:'var(--teal-d)',bg:'var(--teal-l)'});
   buildUserOptions(); selectUser(n);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.getElementById('commentInput').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendComment();} });
-document.getElementById('mobCommentInput').addEventListener('keydown', e => { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMobComment();} });
+document.getElementById('commentInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendComment();}});
+document.getElementById('mobCommentInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMobComment();}});
 buildUserOptions();
 loadData();
 </script>
