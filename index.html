@@ -289,11 +289,63 @@
 
     @media (max-width: 700px) {
       .sidebar { display: none; }
-      .list-head, .list-row { grid-template-columns: 90px 1fr 70px 50px; }
-      .list-head > *:nth-child(3), .list-row > *:nth-child(3),
-      .list-head > *:nth-child(6), .list-row > *:nth-child(6) { display: none; }
       .ota-legend { display: none; }
+      html, body { font-size: 13px; }
+      .topbar { padding: 0 12px; height: 48px; }
+      .logo-name { font-size: 14px; }
+      .logo-sub { display: none; }
+      .logo-icon { width: 28px; height: 28px; }
+      .logo-icon i { font-size: 15px; }
+      .user-btn { padding: 4px 8px; font-size: 11px; }
+      .av { width: 22px; height: 22px; font-size: 10px; }
+      .tabs { padding: 0 8px; }
+      .tab { padding: 8px 10px; font-size: 12px; }
+      .prop-counter { font-size: 11px; }
+      .filters { padding: 8px 12px; gap: 6px; flex-wrap: wrap; }
+      .filter-label { display: none; }
+      .fbtn { padding: 4px 10px; font-size: 11px; }
+      .search-wrap { width: 100%; margin-left: 0; margin-top: 4px; }
+      .search-wrap input { width: 100%; }
+      .cal-wrap { padding: 10px; }
+      .cal-grid { display: none; }
+      #mobAgenda { display: block !important; }
+      .cal-month { font-size: 14px; }
+      .list-wrap { padding: 10px; }
+      .list-head { display: none; }
+      .list-row { grid-template-columns: 70px 1fr 50px 40px; padding: 8px 10px; }
+      .list-row > *:nth-child(3), .list-row > *:nth-child(6) { display: none; }
+      .lprop { font-size: 12px; }
+      .today-wrap { padding: 12px; }
+      .today-title { font-size: 14px; }
+      .today-card { padding: 12px; }
+      .today-prop { font-size: 14px; }
+      .modal-box { width: 90vw; padding: 20px; }
     }
+
+    /* ── AGENDA VIEW (mobile calendar replacement) ── */
+    #mobAgenda { display: none; }
+    .agenda-day { margin-bottom: 16px; }
+    .agenda-day-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 0; margin-bottom: 6px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .agenda-day-num { font-size: 22px; font-weight: 600; color: var(--text); line-height: 1; min-width: 32px; }
+    .agenda-day-label { font-size: 12px; color: var(--text2); }
+    .agenda-today .agenda-day-num { color: var(--teal); }
+    .agenda-today .agenda-day-label { color: var(--teal); font-weight: 500; }
+    .agenda-event {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: var(--radius); margin-bottom: 6px; cursor: pointer;
+      border: 0.5px solid var(--border); background: var(--bg); transition: background 0.1s;
+    }
+    .agenda-event:active { background: var(--bg2); }
+    .agenda-event-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .agenda-event-info { flex: 1; min-width: 0; }
+    .agenda-event-prop { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .agenda-event-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+    .agenda-event-badge { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 8px; flex-shrink: 0; }
+    .agenda-empty { font-size: 12px; color: var(--text3); padding: 4px 0 8px; }
   </style>
 </head>
 <body>
@@ -369,6 +421,10 @@
         <div class="cal-grid">
           <div class="cal-weekdays" id="calWd"></div>
           <div class="cal-days" id="calDays"></div>
+        </div>
+        <!-- AGENDA VIEW for mobile -->
+        <div id="mobAgenda"></div>
+        <div style="display:none;">
         </div>
       </div>
     </div>
@@ -529,9 +585,65 @@ function getFiltered() {
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderAll() {
-  if (activeTab === 'calendar') renderCalendar();
+  if (activeTab === 'calendar') { renderCalendar(); renderAgenda(); }
   else if (activeTab === 'list') renderList();
   else renderToday();
+}
+
+function renderAgenda() {
+  const container = document.getElementById('mobAgenda');
+  if (!container) return;
+  const evts = getFiltered();
+  const today = new Date();
+  // Show 60 days from start of current month
+  const start = new Date(calYear, calMonth, 1);
+  const end   = new Date(calYear, calMonth + 2, 0);
+  const days = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) {
+    days.push(new Date(d));
+  }
+  const DAYS_FULL = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  let html = '';
+  days.forEach(day => {
+    const ds = day.toDateString();
+    const isToday = ds === today.toDateString();
+    const dayEvts = evts.filter(r => {
+      const ci = new Date(r.checkin  + 'T12:00:00').toDateString() === ds;
+      const co = new Date(r.checkout + 'T12:00:00').toDateString() === ds;
+      if (!filters.checkin  && ci && !co) return false;
+      if (!filters.checkout && co && !ci) return false;
+      return ci || co;
+    });
+    if (!dayEvts.length && !isToday) return;
+    html += `<div class="agenda-day${isToday?' agenda-today':''}">
+      <div class="agenda-day-header">
+        <div class="agenda-day-num">${day.getDate()}</div>
+        <div class="agenda-day-label">${DAYS_FULL[day.getDay()]} ${MONTHS[day.getMonth()]}</div>
+        ${isToday ? '<span class="badge ci" style="margin-left:auto;font-size:10px;">Hoy</span>' : ''}
+      </div>`;
+    if (!dayEvts.length) {
+      html += `<div class="agenda-empty">Sin movimientos</div>`;
+    } else {
+      dayEvts.forEach(r => {
+        const isCi = new Date(r.checkin + 'T12:00:00').toDateString() === ds;
+        const dotColor = r.ota === 'airbnb' ? '#E8484C' : '#378ADD';
+        const typeBg   = isCi ? 'var(--teal-l)'   : 'var(--amber-l)';
+        const typeCol  = isCi ? 'var(--teal-d)'    : 'var(--amber)';
+        const typeLabel = isCi ? '↓ Check-in' : '↑ Check-out';
+        html += `<div class="agenda-event" onclick="openEvent('${r.id}',event)">
+          <div class="agenda-event-dot" style="background:${dotColor};"></div>
+          <div class="agenda-event-info">
+            <div class="agenda-event-prop">${r.propName}</div>
+            <div class="agenda-event-sub">${r.guest || 'Huésped'} · ${r.nights} noche${r.nights>1?'s':''}</div>
+          </div>
+          <span class="agenda-event-badge" style="background:${typeBg};color:${typeCol};">${typeLabel}</span>
+        </div>`;
+      });
+    }
+    html += `</div>`;
+  });
+  if (!html) html = `<div style="padding:30px 0;text-align:center;color:var(--text3);font-size:13px;">Sin eventos este mes</div>`;
+  container.innerHTML = html;
 }
 
 function renderCalendar() {
