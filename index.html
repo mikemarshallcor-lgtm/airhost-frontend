@@ -244,6 +244,27 @@
     .new-user{display:flex;gap:8px;}
     .new-user input{flex:1;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--bg2);outline:none;font-family:var(--font);}
 
+    /* STATUS BADGES */
+    .prop-list{padding:16px;max-width:800px;margin:0 auto;}
+    .prop-summary{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+    .prop-summary-card{flex:1;min-width:140px;padding:14px 16px;border-radius:var(--radius-lg);border:0.5px solid var(--border2);background:var(--bg);box-shadow:var(--shadow);}
+    .prop-summary-num{font-size:28px;font-weight:700;letter-spacing:-1px;}
+    .prop-summary-lbl{font-size:12px;color:var(--text2);margin-top:2px;}
+    .prop-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .prop-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg);margin-bottom:6px;box-shadow:var(--shadow);}
+    .prop-item-name{flex:1;font-size:13px;font-weight:500;}
+    .prop-item-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+    .prop-status{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+    .prop-status.ok{background:var(--teal-l);color:var(--teal-d);}
+    .prop-status.error{background:var(--red-l);color:var(--red-d);}
+    .prop-status.loading{background:var(--bg3);color:var(--text3);}
+    .prop-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .prop-status-dot.ok{background:var(--teal);}
+    .prop-status-dot.error{background:var(--red);}
+    .prop-status-dot.loading{background:var(--text3);}
+    .sync-btn{padding:6px 14px;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;}
+    .sync-btn:hover{background:var(--bg3);}
+
     /* LOADING */
     .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text2);font-size:13px;text-align:center;padding:20px;}
     .spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;}
@@ -324,6 +345,7 @@
     <button class="tab"        id="tab-manana"   onclick="switchTab('manana',this)">Mañana <span class="tab-count zero" id="cnt-manana">0</span></button>
     <button class="tab"        id="tab-semana"   onclick="switchTab('semana',this)">Semana</button>
     <button class="tab"        id="tab-calendar" onclick="switchTab('calendar',this)">Calendario</button>
+    <button class="tab"        id="tab-alojamientos" onclick="switchTab('alojamientos',this)">Alojamientos</button>
   </div>
 
   <!-- FILTERS -->
@@ -497,7 +519,7 @@ function toggleFilter(f) {
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderView() {
-  document.getElementById('filtersBar').style.display=activeTab==='calendar'?'none':'flex';
+  document.getElementById('filtersBar').style.display=(activeTab==='calendar'||activeTab==='alojamientos')?'none':'flex';
   if(activeTab==='hoy'){customDate=null;renderDayView(new Date(),'Hoy');}
   else if(activeTab==='manana'){customDate=null;const t=new Date();t.setDate(t.getDate()+1);renderDayView(t,'Mañana');}
   else if(activeTab==='semana'){if(customDate)renderDayView(customDate,dateLabel(customDate));else renderWeekView();}
@@ -889,11 +911,90 @@ async function sendMobComment() {
   finally{inp.disabled=false;inp.focus();}
 }
 
+// ── ALOJAMIENTOS VIEW ────────────────────────────────────────────────────────
+let statusCache = null;
+
+async function renderAlojamientos(forceRefresh=false) {
+  const cont = document.getElementById('viewContent');
+  document.getElementById('filtersBar').style.display = 'none';
+
+  // Build initial UI with loading states
+  const airbnbProps = properties.filter(p => p.ota === 'airbnb');
+  const bookingProps = properties.filter(p => p.ota === 'booking');
+
+  const renderList = (props, statusMap) => props.map(p => {
+    const s = statusMap ? statusMap[p.id] : null;
+    const statusClass = !s ? 'loading' : s.ok ? 'ok' : 'error';
+    const statusText = !s ? 'Verificando...' : s.ok ? `OK · ${s.events} reserva${s.events!==1?'s':''}` : 'Error de conexión';
+    return `<div class="prop-item">
+      <div class="prop-status-dot ${statusClass}"></div>
+      <div style="flex:1;">
+        <div class="prop-item-name">${p.name}</div>
+        <div class="prop-item-sub">${p.ota === 'airbnb' ? 'Airbnb' : 'Booking.com'}</div>
+      </div>
+      <div class="prop-status ${statusClass}">
+        ${statusClass === 'loading' ? '<div class="spinner" style="width:12px;height:12px;border-width:1.5px;"></div>' : ''}
+        ${statusText}
+      </div>
+    </div>`;
+  }).join('');
+
+  const buildHTML = (statusMap) => `<div class="prop-list">
+    <div class="prop-summary">
+      <div class="prop-summary-card">
+        <div class="prop-summary-num">${properties.length}</div>
+        <div class="prop-summary-lbl">Total alojamientos</div>
+      </div>
+      <div class="prop-summary-card" style="border-color:#FF5A5F44;">
+        <div class="prop-summary-num" style="color:#CC2222;">${airbnbProps.length}</div>
+        <div class="prop-summary-lbl">Airbnb</div>
+      </div>
+      <div class="prop-summary-card" style="border-color:#378ADD44;">
+        <div class="prop-summary-num" style="color:var(--blue);">${bookingProps.length}</div>
+        <div class="prop-summary-lbl">Booking.com</div>
+      </div>
+      ${statusMap ? (() => {
+        const errors = Object.values(statusMap).filter(s=>!s.ok).length;
+        return `<div class="prop-summary-card" style="border-color:${errors>0?'var(--red)':'var(--teal)'}44;">
+          <div class="prop-summary-num" style="color:${errors>0?'var(--red)':'var(--teal)'};">${errors>0?errors:'✓'}</div>
+          <div class="prop-summary-lbl">${errors>0?'Con errores':'Todos OK'}</div>
+        </div>`;
+      })() : ''}
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="prop-section-title"><i class="ti ti-home" style="font-size:13px;color:#CC2222;"></i>Airbnb · ${airbnbProps.length}</div>
+      <button class="sync-btn" onclick="renderAlojamientos(true)"><i class="ti ti-refresh" style="font-size:13px;"></i>Verificar</button>
+    </div>
+    ${renderList(airbnbProps, statusMap)}
+    <div class="prop-section-title" style="margin-top:16px;"><i class="ti ti-hotel-service" style="font-size:13px;color:var(--blue);"></i>Booking.com · ${bookingProps.length}</div>
+    ${renderList(bookingProps, statusMap)}
+  </div>`;
+
+  // Show immediately with loading states
+  cont.innerHTML = buildHTML(null);
+
+  // Fetch status if not cached or forced
+  if (!statusCache || forceRefresh) {
+    try {
+      const res = await fetch(BACKEND_URL + '/status');
+      const data = await res.json();
+      statusCache = {};
+      data.results.forEach(r => { statusCache[r.id] = r; });
+    } catch(e) {
+      statusCache = {};
+      properties.forEach(p => { statusCache[p.id] = { ok: false, events: 0, error: 'No se pudo conectar' }; });
+    }
+  }
+  cont.innerHTML = buildHTML(statusCache);
+}
+
 // ── NAV ───────────────────────────────────────────────────────────────────────
 function switchTab(tab,btn) {
   activeTab=tab; customDate=null;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active'); renderView();
+  btn.classList.add('active');
+  if(tab==='alojamientos') renderAlojamientos();
+  else renderView();
 }
 
 // ── USER ──────────────────────────────────────────────────────────────────────
