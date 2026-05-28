@@ -262,6 +262,31 @@
     .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── MOBILE MODAL ── */
+    .mob-modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 200; align-items: flex-end; justify-content: center;
+    }
+    .mob-modal-overlay.open { display: flex; }
+    .mob-modal-box {
+      background: var(--bg); border-radius: 16px 16px 0 0;
+      width: 100%; max-height: 85vh; display: flex; flex-direction: column;
+      overflow: hidden; padding-bottom: env(safe-area-inset-bottom);
+    }
+    .mob-modal-handle {
+      width: 36px; height: 4px; background: var(--border2); border-radius: 2px;
+      margin: 12px auto 8px;
+    }
+    .mob-modal-head { padding: 8px 16px 12px; border-bottom: 0.5px solid var(--border); }
+    .mob-modal-prop { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+    .mob-modal-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .mob-modal-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .mob-modal-lbl { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 5px; }
+    .mob-modal-val { font-size: 13px; font-weight: 500; }
+    .mob-modal-comments { flex: 1; overflow-y: auto; padding: 12px 16px; }
+    .mob-modal-ctitle { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .mob-modal-input { padding: 12px 16px; border-top: 0.5px solid var(--border); display: flex; gap: 8px; align-items: flex-end; }
+
     @media (max-width: 700px) {
       .sidebar { display: none; }
       .list-head, .list-row { grid-template-columns: 90px 1fr 70px 50px; }
@@ -390,6 +415,23 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- MOBILE EVENT MODAL -->
+<div class="mob-modal-overlay" id="mobModal">
+  <div class="mob-modal-box" id="mobModalBox">
+    <div class="mob-modal-handle"></div>
+    <div class="mob-modal-head">
+      <div class="mob-modal-prop" id="mobProp"></div>
+      <div class="mob-modal-badges" id="mobBadges"></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Huésped</span><span class="mob-modal-val" id="mobGuest"></span></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Check-in</span><span class="mob-modal-val" id="mobCi"></span></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Check-out</span><span class="mob-modal-val" id="mobCo"></span></div>
+      <div class="mob-modal-row"><span class="mob-modal-lbl">Noches</span><span class="mob-modal-val" id="mobNights"></span></div>
+    </div>
+    <div class="mob-modal-comments"><div class="mob-modal-ctitle">Notas del equipo</div><div id="mobCommentList"></div></div>
+    <div class="mob-modal-input"><textarea class="cinput" id="mobCommentInput" placeholder="Escribe una nota..." rows="1"></textarea><button class="send-btn" onclick="sendMobComment()"><i class="ti ti-send"></i></button></div>
   </div>
 </div>
 
@@ -720,3 +762,83 @@ loadData();
 </script>
 </body>
 </html>
+<script>
+// ── MOBILE MODAL ──────────────────────────────────────────────────────────────
+function isMobile() { return window.innerWidth <= 700; }
+
+function openMobModal(r) {
+  const ci = new Date(r.checkin  + 'T12:00:00');
+  const co = new Date(r.checkout + 'T12:00:00');
+  document.getElementById('mobProp').textContent = r.propName;
+  const otaLabel = r.ota === 'airbnb' ? '<span class="badge ab">Airbnb</span>' : '<span class="badge bk">Booking</span>';
+  document.getElementById('mobBadges').innerHTML = `
+    <span class="badge ci">↓ Check-in ${ci.getDate()}/${ci.getMonth()+1}</span>
+    <span class="badge co">↑ Check-out ${co.getDate()}/${co.getMonth()+1}</span>
+    ${otaLabel}`;
+  document.getElementById('mobGuest').textContent  = r.guest || 'Huésped';
+  document.getElementById('mobCi').textContent     = `${ci.getDate()} ${MONTHS[ci.getMonth()]}`;
+  document.getElementById('mobCo').textContent     = `${co.getDate()} ${MONTHS[co.getMonth()]}`;
+  document.getElementById('mobNights').textContent = `${r.nights} noche${r.nights>1?'s':''}`;
+  renderMobComments(commentsCache[r.id] || []);
+  document.getElementById('mobModal').classList.add('open');
+  loadComments(r.id).then(cmts => renderMobComments(cmts));
+}
+
+function closeMobModal(e) {
+  if (!e || e.target === document.getElementById('mobModal')) {
+    document.getElementById('mobModal').classList.remove('open');
+  }
+}
+
+function renderMobComments(cmts) {
+  const list = document.getElementById('mobCommentList');
+  if (!cmts.length) { list.innerHTML = `<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas.</div>`; return; }
+  list.innerHTML = cmts.map(c => {
+    const u = TEAM.find(t => t.name === c.author) || { color: 'var(--teal-d)', bg: 'var(--teal-l)' };
+    const ts = new Date(c.created_at);
+    const timeStr = ts.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    const dateStr = ts.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+    return `<div class="comment">
+      <div class="cav" style="background:${u.bg};color:${u.color};">${(c.author||'?').slice(0,2).toUpperCase()}</div>
+      <div class="cbody">
+        <div class="cmeta"><span class="cauthor">${c.author}</span><span class="ctime">${dateStr} ${timeStr}</span></div>
+        <div class="ctext">${c.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const mc = document.getElementById('mobComments');
+  mc.scrollTop = mc.scrollHeight;
+}
+
+async function sendMobComment() {
+  if (!currentUser) { openModal(); return; }
+  if (!selectedRes) return;
+  const input = document.getElementById('mobCommentInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; input.disabled = true;
+  try {
+    await saveComment(selectedRes.id, selectedRes.propName, text);
+    renderMobComments(commentsCache[selectedRes.id] || []);
+    renderAll();
+  } catch(e) { alert('Error guardando la nota.'); }
+  finally { input.disabled = false; input.focus(); }
+}
+
+// Override openEvent to show mobile modal on small screens
+const _origOpenEvent = openEvent;
+window.openEvent = async function(id, e) {
+  if (e) e.stopPropagation();
+  selectedRes = reservations.find(r => r.id === id);
+  if (!selectedRes) return;
+  if (isMobile()) {
+    openMobModal(selectedRes);
+  } else {
+    _origOpenEvent(id, e);
+  }
+};
+
+document.getElementById('mobCommentInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMobComment(); }
+});
+</script>
