@@ -993,7 +993,7 @@ function switchTab(tab,btn) {
   activeTab=tab; customDate=null;
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
-  if(tab==='alojamientos') renderAlojamientos();
+  if(tab==='alojamientos') renderAlojamientos(false);
   else renderView();
 }
 
