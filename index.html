@@ -917,33 +917,61 @@ let statusCache = null;
 async function renderAlojamientos(forceRefresh=false) {
   const cont = document.getElementById('viewContent');
   document.getElementById('filtersBar').style.display = 'none';
+  const isAdmin = currentUser && currentUser.name === 'Mike B.';
 
-  // Build initial UI with loading states
-  const airbnbProps = properties.filter(p => p.ota === 'airbnb');
-  const bookingProps = properties.filter(p => p.ota === 'booking');
+  // Load from Supabase
+  let props = [];
+  try {
+    props = await sbFetch('properties?active=eq.true&order=ota.asc,name.asc');
+  } catch(e) {
+    props = properties.map(p => ({id:p.id, name:p.name, ota:p.ota, ical_url:''}));
+  }
 
-  const renderList = (props, statusMap) => props.map(p => {
+  const airbnbProps = props.filter(p => p.ota === 'airbnb');
+  const bookingProps = props.filter(p => p.ota === 'booking');
+
+  const renderList = (list, statusMap) => list.map(p => {
     const s = statusMap ? statusMap[p.id] : null;
-    const statusClass = !s ? 'loading' : s.ok ? 'ok' : 'error';
-    const statusText = !s ? 'Verificando...' : s.ok ? `OK · ${s.events} reserva${s.events!==1?'s':''}` : 'Error de conexión';
+    const sc = !s ? 'loading' : s.ok ? 'ok' : 'error';
+    const st = !s ? 'Sin verificar' : s.ok ? `OK · ${s.events} reserva${s.events!==1?'s':''}` : 'Error';
+    const safeUrl = (p.ical_url||'').replace(/\/g,'\\').replace(/'/g,"\'");
+    const safeName = (p.name||'').replace(/'/g,"\'");
     return `<div class="prop-item">
-      <div class="prop-status-dot ${statusClass}"></div>
-      <div style="flex:1;">
+      <div class="prop-status-dot ${sc}"></div>
+      <div style="flex:1;min-width:0;">
         <div class="prop-item-name">${p.name}</div>
-        <div class="prop-item-sub">${p.ota === 'airbnb' ? 'Airbnb' : 'Booking.com'}</div>
+        <div class="prop-item-sub">${p.ota==='airbnb'?'Airbnb':'Booking.com'}</div>
       </div>
-      <div class="prop-status ${statusClass}">
-        ${statusClass === 'loading' ? '<div class="spinner" style="width:12px;height:12px;border-width:1.5px;"></div>' : ''}
-        ${statusText}
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="prop-status ${sc}">${st}</div>
+        ${isAdmin?`<button onclick="editProp('${p.id}','${safeName}','${p.ota}','${safeUrl}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px;" title="Editar">✏️</button>`:''}
       </div>
     </div>`;
   }).join('');
 
+  const formHTML = isAdmin ? `
+    <div id="propForm" style="display:none;background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border2);">
+      <div style="font-size:13px;font-weight:600;margin-bottom:12px;" id="propFormTitle">Nueva propiedad</div>
+      <input type="hidden" id="propFormId">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <input class="assign-input" id="propFormName" placeholder="Nombre de la propiedad" style="width:100%;">
+        <select class="assign-select" id="propFormOta" style="width:100%;">
+          <option value="airbnb">Airbnb</option>
+          <option value="booking">Booking.com</option>
+        </select>
+        <input class="assign-input" id="propFormUrl" placeholder="URL del calendario iCal..." style="width:100%;">
+        <div style="display:flex;gap:8px;">
+          <button class="assign-btn" onclick="saveProp()" style="flex:1;"><i class="ti ti-check"></i> Guardar</button>
+          <button onclick="hidePropForm()" style="flex:1;padding:7px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-family:var(--font);font-size:12px;">Cancelar</button>
+        </div>
+      </div>
+    </div>` : '';
+
   const buildHTML = (statusMap) => `<div class="prop-list">
     <div class="prop-summary">
       <div class="prop-summary-card">
-        <div class="prop-summary-num">${properties.length}</div>
-        <div class="prop-summary-lbl">Total alojamientos</div>
+        <div class="prop-summary-num">${props.length}</div>
+        <div class="prop-summary-lbl">Total</div>
       </div>
       <div class="prop-summary-card" style="border-color:#FF5A5F44;">
         <div class="prop-summary-num" style="color:#CC2222;">${airbnbProps.length}</div>
@@ -951,41 +979,85 @@ async function renderAlojamientos(forceRefresh=false) {
       </div>
       <div class="prop-summary-card" style="border-color:#378ADD44;">
         <div class="prop-summary-num" style="color:var(--blue);">${bookingProps.length}</div>
-        <div class="prop-summary-lbl">Booking.com</div>
+        <div class="prop-summary-lbl">Booking</div>
       </div>
       ${statusMap ? (() => {
         const errors = Object.values(statusMap).filter(s=>!s.ok).length;
-        return `<div class="prop-summary-card" style="border-color:${errors>0?'var(--red)':'var(--teal)'}44;">
-          <div class="prop-summary-num" style="color:${errors>0?'var(--red)':'var(--teal)'};">${errors>0?errors:'✓'}</div>
-          <div class="prop-summary-lbl">${errors>0?'Con errores':'Todos OK'}</div>
-        </div>`;
+        return '<div class="prop-summary-card" style="border-color:' + (errors>0?'var(--red)':'var(--teal)') + '44;"><div class="prop-summary-num" style="color:' + (errors>0?'var(--red)':'var(--teal)') + ';">' + (errors>0?errors:'✓') + '</div><div class="prop-summary-lbl">' + (errors>0?'Con errores':'Todos OK') + '</div></div>';
       })() : ''}
     </div>
+    ${formHTML}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
       <div class="prop-section-title"><i class="ti ti-home" style="font-size:13px;color:#CC2222;"></i>Airbnb · ${airbnbProps.length}</div>
-      <button class="sync-btn" onclick="renderAlojamientos(true)"><i class="ti ti-refresh" style="font-size:13px;"></i>Verificar</button>
+      <div style="display:flex;gap:8px;">
+        ${isAdmin ? '<button class="assign-btn" onclick="showAddProp()"><i class="ti ti-plus"></i> Agregar</button>' : ''}
+        <button class="sync-btn" onclick="verifyStatus()"><i class="ti ti-refresh" style="font-size:13px;"></i>Verificar</button>
+      </div>
     </div>
     ${renderList(airbnbProps, statusMap)}
     <div class="prop-section-title" style="margin-top:16px;"><i class="ti ti-hotel-service" style="font-size:13px;color:var(--blue);"></i>Booking.com · ${bookingProps.length}</div>
     ${renderList(bookingProps, statusMap)}
   </div>`;
 
-  // Show immediately with loading states
-  cont.innerHTML = buildHTML(null);
-
-  // Fetch status if not cached or forced
-  if (!statusCache || forceRefresh) {
-    try {
-      const res = await fetch(BACKEND_URL + '/status');
-      const data = await res.json();
-      statusCache = {};
-      data.results.forEach(r => { statusCache[r.id] = r; });
-    } catch(e) {
-      statusCache = {};
-      properties.forEach(p => { statusCache[p.id] = { ok: false, events: 0, error: 'No se pudo conectar' }; });
-    }
-  }
   cont.innerHTML = buildHTML(statusCache);
+}
+
+function showAddProp() {
+  document.getElementById('propFormTitle').textContent = 'Nueva propiedad';
+  document.getElementById('propFormId').value = '';
+  document.getElementById('propFormName').value = '';
+  document.getElementById('propFormOta').value = 'airbnb';
+  document.getElementById('propFormUrl').value = '';
+  document.getElementById('propForm').style.display = 'block';
+  document.getElementById('propFormName').focus();
+  document.getElementById('propForm').scrollIntoView({behavior:'smooth'});
+}
+
+function hidePropForm() {
+  document.getElementById('propForm').style.display = 'none';
+}
+
+function editProp(id, name, ota, url) {
+  document.getElementById('propFormTitle').textContent = 'Editar propiedad';
+  document.getElementById('propFormId').value = id;
+  document.getElementById('propFormName').value = name;
+  document.getElementById('propFormOta').value = ota;
+  document.getElementById('propFormUrl').value = url;
+  document.getElementById('propForm').style.display = 'block';
+  document.getElementById('propForm').scrollIntoView({behavior:'smooth'});
+}
+
+async function saveProp() {
+  const id   = document.getElementById('propFormId').value;
+  const name = document.getElementById('propFormName').value.trim();
+  const ota  = document.getElementById('propFormOta').value;
+  const url  = document.getElementById('propFormUrl').value.trim();
+  if (!name || !url) { alert('Completa nombre y URL iCal.'); return; }
+  try {
+    if (id) {
+      await sbFetch('properties?id=eq.'+id, {method:'PATCH', body:JSON.stringify({name, ota, ical_url:url})});
+    } else {
+      const newId = 'p' + Date.now();
+      await sbFetch('properties', {method:'POST', body:JSON.stringify({id:newId, name, ota, ical_url:url, active:true})});
+    }
+    await fetch(BACKEND_URL+'/invalidate', {method:'POST'}).catch(()=>{});
+    statusCache = null;
+    hidePropForm();
+    await renderAlojamientos(false);
+    loadData();
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+let statusCache = null;
+
+async function verifyStatus() {
+  try {
+    const res = await fetch(BACKEND_URL+'/status');
+    const data = await res.json();
+    statusCache = {};
+    data.results.forEach(r => { statusCache[r.id] = r; });
+  } catch(e) { statusCache = {}; }
+  await renderAlojamientos(false);
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
