@@ -11,35 +11,30 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhyaG1rb3NydWt1dmp3aXpuc3NyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5MjAyNTAsImV4cCI6MjA5NTQ5NjI1MH0.aw6lp1EauCeOWki9GuN85-8WxjRvoYo6IIU7ZijrbVg';
   </script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --teal: #1D9E75; --teal-l: #E1F5EE; --teal-d: #0F6E56;
-      --red: #D94040;  --red-l: #FDEAEA;  --red-d: #A82E2E;
-      --blue: #378ADD; --blue-l: #E6F1FB;
-      --coral: #D85A30; --coral-l: #FAECE7;
-      --amber: #BA7517; --amber-l: #FAEEDA;
-      --purple: #7C3AED; --purple-l: #EDE9FE;
-      --bg: #ffffff; --bg2: #f6f6f4; --bg3: #eeecea;
-      --text: #1a1a18; --text2: #6b6b66; --text3: #a8a8a3;
-      --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16);
-      --radius: 10px; --radius-lg: 14px;
-      --font: -apple-system, 'Helvetica Neue', Arial, sans-serif;
-      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 0 0 0.5px rgba(0,0,0,0.06);
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --teal:#1D9E75;--teal-l:#E1F5EE;--teal-d:#0F6E56;
+      --red:#D94040;--red-l:#FDEAEA;--red-d:#A82E2E;
+      --blue:#378ADD;--blue-l:#E6F1FB;
+      --coral:#D85A30;--coral-l:#FAECE7;
+      --amber:#BA7517;--amber-l:#FAEEDA;
+      --purple:#7C3AED;--purple-l:#EDE9FE;
+      --bg:#fff;--bg2:#f6f6f4;--bg3:#eeecea;
+      --text:#1a1a18;--text2:#6b6b66;--text3:#a8a8a3;
+      --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);
+      --radius:10px;--radius-lg:14px;
+      --font:-apple-system,'Helvetica Neue',Arial,sans-serif;
+      --shadow:0 1px 3px rgba(0,0,0,0.08),0 0 0 0.5px rgba(0,0,0,0.06);
     }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg:#161614; --bg2:#1e1e1c; --bg3:#252523;
-        --text:#f0efe8; --text2:#a0a09b; --text3:#666662;
-        --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.15);
-        --teal-l:#0a2e20; --red-l:#2e0d0d; --blue-l:#0a1e35;
-        --amber-l:#2e1f04; --purple-l:#1e1035;
-        --shadow:0 1px 3px rgba(0,0,0,0.3),0 0 0 0.5px rgba(255,255,255,0.06);
-      }
-    }
+    @media(prefers-color-scheme:dark){:root{
+      --bg:#161614;--bg2:#1e1e1c;--bg3:#252523;
+      --text:#f0efe8;--text2:#a0a09b;--text3:#666662;
+      --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+      --teal-l:#0a2e20;--red-l:#2e0d0d;--blue-l:#0a1e35;
+      --amber-l:#2e1f04;--purple-l:#1e1035;
+    }}
     html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);}
     .app{display:flex;flex-direction:column;height:100dvh;overflow:hidden;}
-
-    /* TOPBAR */
     .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:50px;border-bottom:0.5px solid var(--border);background:var(--bg);flex-shrink:0;}
     .logo{display:flex;align-items:center;gap:9px;}
     .logo-icon{width:30px;height:30px;border-radius:8px;background:var(--teal);display:flex;align-items:center;justify-content:center;}
@@ -48,8 +43,6 @@
     .logo-badge{font-size:10px;color:var(--text3);background:var(--bg2);padding:2px 6px;border-radius:4px;margin-left:2px;}
     .user-btn{display:flex;align-items:center;gap:7px;padding:5px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);cursor:pointer;font-size:12px;color:var(--text);font-family:var(--font);}
     .av{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;}
-
-    /* TABS */
     .tabs{display:flex;padding:0 16px;border-bottom:0.5px solid var(--border);background:var(--bg);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
     .tabs::-webkit-scrollbar{display:none;}
     .tab{padding:10px 13px;font-size:13px;cursor:pointer;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text2);font-family:var(--font);white-space:nowrap;transition:all 0.15s;flex-shrink:0;}
@@ -57,8 +50,6 @@
     .tab:hover:not(.active){color:var(--text);}
     .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--teal);color:#fff;font-size:10px;font-weight:600;margin-left:4px;vertical-align:middle;}
     .tab-count.zero{background:var(--bg3);color:var(--text3);}
-
-    /* FILTERS */
     .filters-bar{display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:0.5px solid var(--border);background:var(--bg2);flex-shrink:0;flex-wrap:wrap;}
     .filter-label{font-size:11px;color:var(--text3);font-weight:500;}
     .fbtn{display:flex;align-items:center;gap:5px;padding:5px 12px;border:1.5px solid var(--border2);border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;background:var(--bg);color:var(--text2);font-family:var(--font);transition:all 0.15s;}
@@ -67,12 +58,8 @@
     .fbtn.active-ab{background:#FFF0F0;color:#CC2222;border-color:#E8484C;}
     .fbtn.active-bk{background:var(--blue-l);color:var(--blue);border-color:var(--blue);}
     .filter-sep{width:1px;height:18px;background:var(--border2);margin:0 2px;}
-
-    /* MAIN */
     .main{display:flex;flex:1;overflow:hidden;}
     .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-
-    /* DAY VIEW */
     .day-view{padding:16px;max-width:680px;margin:0 auto;}
     .day-header{margin-bottom:14px;}
     .day-title{font-size:20px;font-weight:600;letter-spacing:-0.4px;}
@@ -85,15 +72,12 @@
     .empty-day i{font-size:40px;color:var(--text3);}
     .empty-day p{font-size:14px;color:var(--text2);font-weight:500;}
     .empty-day small{font-size:12px;color:var(--text3);}
-
-    /* RES CARD */
     .res-card{border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow);background:var(--bg);border:0.5px solid var(--border2);border-left-width:4px;}
     .res-card.ci{border-left-color:var(--teal);}
     .res-card.co{border-left-color:var(--red);}
     .res-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1);}
-    .res-card:active{transform:translateY(0);}
     .res-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;}
-    .res-card-prop{font-size:15px;font-weight:600;letter-spacing:-0.2px;flex:1;}
+    .res-card-prop{font-size:15px;font-weight:600;flex:1;}
     .res-card-badges{display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0;}
     .res-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
     .res-card-item{display:flex;flex-direction:column;gap:2px;}
@@ -103,22 +87,16 @@
     .res-card-note{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--coral);}
     .res-card-assigned{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--purple);font-weight:500;}
     .res-card-done{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--teal);font-weight:500;}
-
-    /* BADGES */
     .badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap;}
     .badge.ci{background:var(--teal-l);color:var(--teal-d);}
     .badge.co{background:var(--red-l);color:var(--red-d);}
     .badge.ab{background:#FFF0F0;color:#CC2222;}
     .badge.bk{background:var(--blue-l);color:var(--blue);}
-    .badge.done{background:var(--teal-l);color:var(--teal-d);}
-    .badge.assigned{background:var(--purple-l);color:var(--purple);}
-
-    /* WEEK VIEW */
     .week-view{padding:16px;max-width:900px;margin:0 auto;}
     .week-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
     .week-nav button{width:32px;height:32px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);}
     .week-nav button:hover{background:var(--bg3);}
-    .week-nav .today-btn{width:auto;padding:0 12px;font-size:12px;font-family:var(--font);}
+    .week-nav .wtoday{width:auto;padding:0 12px;font-size:12px;font-family:var(--font);}
     .week-title{font-size:15px;font-weight:500;flex:1;}
     .week-day{margin-bottom:12px;}
     .week-day-header{display:flex;align-items:center;gap:10px;padding:7px 12px;background:var(--bg2);border-radius:var(--radius);margin-bottom:6px;}
@@ -136,12 +114,10 @@
     .week-event-sub{font-size:11px;color:var(--text2);margin-top:2px;}
     .week-event-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
     .week-no-events{font-size:12px;color:var(--text3);padding:4px 12px 8px;}
-
-    /* CALENDAR */
     .cal-view{padding:16px;}
     .cal-nav-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
     .cal-nav-row button{width:32px;height:32px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);}
-    .today-btn{width:auto!important;padding:0 12px;font-size:12px;font-family:var(--font);}
+    .ctoday-btn{width:auto!important;padding:0 12px;font-size:12px;font-family:var(--font);}
     .cal-month-label{font-size:16px;font-weight:600;flex:1;}
     .cal-grid{border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
     .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg2);border-bottom:0.5px solid var(--border);}
@@ -158,8 +134,36 @@
     .cal-pill.ci{background:var(--teal-l);color:var(--teal-d);}
     .cal-pill.co{background:var(--red-l);color:var(--red-d);}
     .has-note-dot{width:5px;height:5px;border-radius:50%;background:var(--coral);position:absolute;top:5px;right:5px;}
-
-    /* SIDEBAR */
+    .prop-list{padding:16px;max-width:800px;margin:0 auto;}
+    .prop-summary{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+    .prop-summary-card{flex:1;min-width:120px;padding:14px 16px;border-radius:var(--radius-lg);border:0.5px solid var(--border2);background:var(--bg);box-shadow:var(--shadow);}
+    .prop-summary-num{font-size:28px;font-weight:700;letter-spacing:-1px;}
+    .prop-summary-lbl{font-size:12px;color:var(--text2);margin-top:2px;}
+    .prop-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .prop-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg);margin-bottom:6px;box-shadow:var(--shadow);}
+    .prop-item-name{font-size:13px;font-weight:500;}
+    .prop-item-sub{font-size:11px;color:var(--text2);}
+    .prop-status{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+    .prop-status.ok{background:var(--teal-l);color:var(--teal-d);}
+    .prop-status.error{background:var(--red-l);color:var(--red-d);}
+    .prop-status.loading{background:var(--bg3);color:var(--text3);}
+    .prop-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+    .prop-dot.ok{background:var(--teal);}
+    .prop-dot.error{background:var(--red);}
+    .prop-dot.loading{background:var(--text3);}
+    .sync-btn{padding:6px 14px;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;}
+    .sync-btn:hover{background:var(--bg3);}
+    .add-btn{padding:6px 14px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;}
+    .add-btn:hover{background:#6D28D9;}
+    .prop-form{background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border2);}
+    .prop-form-title{font-size:13px;font-weight:600;margin-bottom:12px;}
+    .form-input{width:100%;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;margin-bottom:8px;}
+    .form-input:focus{border-color:var(--teal);}
+    .form-row{display:flex;gap:8px;}
+    .form-row button{flex:1;padding:8px;border-radius:var(--radius);font-size:13px;font-family:var(--font);cursor:pointer;}
+    .btn-save{background:var(--teal);color:#fff;border:none;font-weight:500;}
+    .btn-save:hover{background:var(--teal-d);}
+    .btn-cancel{background:var(--bg);border:0.5px solid var(--border2);color:var(--text2);}
     .sidebar{width:340px;border-left:0.5px solid var(--border);background:var(--bg);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
     .sb-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;gap:8px;}
     .sb-empty i{font-size:40px;color:var(--text3);}
@@ -172,27 +176,19 @@
     .sb-item{display:flex;flex-direction:column;gap:3px;}
     .sb-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:500;}
     .sb-val{font-size:13px;font-weight:500;}
-
-    /* ASSIGNMENT PANEL */
     .assign-panel{padding:12px 16px;border-bottom:0.5px solid var(--border);background:var(--bg2);}
-    .assign-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
-    .assign-done-banner{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--teal-l);border-radius:var(--radius);font-size:13px;color:var(--teal-d);font-weight:500;}
+    .assign-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;}
+    .assign-done{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--teal-l);border-radius:var(--radius);font-size:12px;color:var(--teal-d);font-weight:500;}
     .assign-form{display:flex;flex-direction:column;gap:8px;}
-    .assign-row{display:flex;gap:8px;}
-    .assign-select,.assign-input{flex:1;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;}
+    .assign-select,.assign-input{padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;}
     .assign-select:focus,.assign-input:focus{border-color:var(--teal);}
-    .assign-textarea{width:100%;padding:7px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;font-family:var(--font);color:var(--text);background:var(--bg);outline:none;resize:none;line-height:1.5;}
-    .assign-btn{padding:7px 14px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);transition:background 0.15s;white-space:nowrap;}
+    .assign-row{display:flex;gap:8px;}
+    .assign-btn{padding:7px 14px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);}
     .assign-btn:hover{background:#6D28D9;}
-    .assign-btn.danger{background:var(--red);}
-    .assign-btn.danger:hover{background:var(--red-d);}
     .assign-current{display:flex;flex-direction:column;gap:6px;}
-    .assign-info-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}
-    .assign-info{font-size:12px;color:var(--text);}
+    .assign-info{font-size:12px;}
     .assign-info strong{font-weight:600;}
-    .mark-done-btn{padding:6px 14px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font);}
-
-    /* COMMENTS */
+    .mark-done-btn{padding:5px 12px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius);font-size:12px;cursor:pointer;font-family:var(--font);}
     .sb-comments{flex:1;overflow-y:auto;padding:12px 16px;}
     .sb-ctitle{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;}
     .comment{display:flex;gap:8px;margin-bottom:12px;position:relative;}
@@ -202,19 +198,17 @@
     .cauthor{font-size:12px;font-weight:600;}
     .ctime{font-size:11px;color:var(--text3);}
     .ctext{font-size:12px;color:var(--text2);line-height:1.5;}
-    .cdel{position:absolute;right:0;top:0;background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 4px;line-height:1;opacity:0;transition:opacity 0.15s;}
+    .cdel{position:absolute;right:0;top:0;background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 4px;opacity:0;transition:opacity 0.15s;}
     .comment:hover .cdel{opacity:1;}
     .cdel:hover{color:var(--red);}
     .sb-input{padding:12px 16px;border-top:0.5px solid var(--border);display:flex;gap:8px;align-items:flex-end;}
     textarea.cinput{flex:1;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;font-family:var(--font);color:var(--text);background:var(--bg2);resize:none;outline:none;min-height:36px;max-height:80px;line-height:1.5;}
-    .send-btn{width:34px;height:34px;border-radius:var(--radius);border:none;background:var(--teal);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;transition:background 0.15s;}
+    .send-btn{width:34px;height:34px;border-radius:var(--radius);border:none;background:var(--teal);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
     .send-btn:hover{background:var(--teal-d);}
-
-    /* MOBILE SHEET */
     .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:flex-end;}
     .mob-overlay.open{display:flex;}
     .mob-sheet{background:var(--bg);border-radius:18px 18px 0 0;width:100%;max-height:92dvh;display:flex;flex-direction:column;overflow:hidden;padding-bottom:env(safe-area-inset-bottom);}
-    .mob-sheet-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;}
+    .mob-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 8px;}
     .mob-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto;}
     .mob-close{background:var(--bg2);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--text2);font-family:var(--font);}
     .mob-body{flex:1;overflow-y:auto;padding:0 16px 16px;}
@@ -226,8 +220,6 @@
     .mob-val{font-size:13px;font-weight:500;}
     .mob-section{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px;}
     .mob-input{padding:12px 16px;border-top:0.5px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
-
-    /* USER MODAL */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:100;}
     .modal-box{background:var(--bg);border-radius:var(--radius-lg);border:0.5px solid var(--border2);padding:24px;width:310px;box-shadow:0 8px 32px rgba(0,0,0,0.15);}
     .modal-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
@@ -243,34 +235,9 @@
     .dtext{font-size:11px;color:var(--text3);}
     .new-user{display:flex;gap:8px;}
     .new-user input{flex:1;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);font-size:13px;color:var(--text);background:var(--bg2);outline:none;font-family:var(--font);}
-
-    /* STATUS BADGES */
-    .prop-list{padding:16px;max-width:800px;margin:0 auto;}
-    .prop-summary{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
-    .prop-summary-card{flex:1;min-width:140px;padding:14px 16px;border-radius:var(--radius-lg);border:0.5px solid var(--border2);background:var(--bg);box-shadow:var(--shadow);}
-    .prop-summary-num{font-size:28px;font-weight:700;letter-spacing:-1px;}
-    .prop-summary-lbl{font-size:12px;color:var(--text2);margin-top:2px;}
-    .prop-section-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-    .prop-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:var(--bg);margin-bottom:6px;box-shadow:var(--shadow);}
-    .prop-item-name{flex:1;font-size:13px;font-weight:500;}
-    .prop-item-sub{font-size:11px;color:var(--text2);margin-top:1px;}
-    .prop-status{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;flex-shrink:0;}
-    .prop-status.ok{background:var(--teal-l);color:var(--teal-d);}
-    .prop-status.error{background:var(--red-l);color:var(--red-d);}
-    .prop-status.loading{background:var(--bg3);color:var(--text3);}
-    .prop-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-    .prop-status-dot.ok{background:var(--teal);}
-    .prop-status-dot.error{background:var(--red);}
-    .prop-status-dot.loading{background:var(--text3);}
-    .sync-btn{padding:6px 14px;background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--radius);font-size:12px;color:var(--text2);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;}
-    .sync-btn:hover{background:var(--bg3);}
-
-    /* LOADING */
     .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text2);font-size:13px;text-align:center;padding:20px;}
     .spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
-
-    /* MOBILE */
     @media(max-width:680px){
       .sidebar{display:none;}
       .logo-badge{display:none;}
@@ -278,7 +245,7 @@
       .filters-bar{padding:7px 12px;gap:6px;}
       .fbtn{padding:4px 10px;font-size:11px;}
       .filter-sep{display:none;}
-      .day-view,.week-view,.cal-view{padding:10px;}
+      .day-view,.week-view,.cal-view,.prop-list{padding:10px;}
       .day-title{font-size:18px;}
       .res-card{padding:12px 12px 12px 14px;}
       .res-card-prop{font-size:14px;}
@@ -291,7 +258,6 @@
 <body>
 <div class="app">
 
-  <!-- USER MODAL -->
   <div class="modal-overlay" id="userModal">
     <div class="modal-box">
       <div class="modal-logo">
@@ -307,25 +273,23 @@
     </div>
   </div>
 
-  <!-- MOBILE BOTTOM SHEET -->
-  <div class="mob-overlay" id="mobOverlay" onclick="closeMobSheet(event)">
+  <div class="mob-overlay" id="mobOverlay" onclick="closeMob(event)">
     <div class="mob-sheet">
-      <div class="mob-sheet-bar">
+      <div class="mob-bar">
         <div style="flex:1;"></div>
         <div class="mob-handle"></div>
         <div style="flex:1;display:flex;justify-content:flex-end;">
-          <button class="mob-close" onclick="closeMobSheet()">×</button>
+          <button class="mob-close" onclick="closeMob()">×</button>
         </div>
       </div>
       <div class="mob-body" id="mobBody"></div>
       <div class="mob-input">
-        <textarea class="cinput" id="mobCommentInput" placeholder="Escribe una nota..." rows="1"></textarea>
+        <textarea class="cinput" id="mobInput" placeholder="Escribe una nota..." rows="1"></textarea>
         <button class="send-btn" onclick="sendMobComment()"><i class="ti ti-send"></i></button>
       </div>
     </div>
   </div>
 
-  <!-- TOPBAR -->
   <div class="topbar">
     <div class="logo">
       <div class="logo-icon"><i class="ti ti-building"></i></div>
@@ -339,26 +303,23 @@
     </button>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
-    <button class="tab active" id="tab-hoy"      onclick="switchTab('hoy',this)">Hoy <span class="tab-count zero" id="cnt-hoy">0</span></button>
-    <button class="tab"        id="tab-manana"   onclick="switchTab('manana',this)">Mañana <span class="tab-count zero" id="cnt-manana">0</span></button>
-    <button class="tab"        id="tab-semana"   onclick="switchTab('semana',this)">Semana</button>
-    <button class="tab"        id="tab-calendar" onclick="switchTab('calendar',this)">Calendario</button>
-    <button class="tab"        id="tab-alojamientos" onclick="switchTab('alojamientos',this)">Alojamientos</button>
+    <button class="tab active" id="tab-hoy"    onclick="setTab('hoy',this)">Hoy <span class="tab-count zero" id="cnt-hoy">0</span></button>
+    <button class="tab" id="tab-manana"        onclick="setTab('manana',this)">Mañana <span class="tab-count zero" id="cnt-manana">0</span></button>
+    <button class="tab" id="tab-semana"        onclick="setTab('semana',this)">Semana</button>
+    <button class="tab" id="tab-calendar"      onclick="setTab('calendar',this)">Calendario</button>
+    <button class="tab" id="tab-alojamientos"  onclick="setTab('alojamientos',this)">Alojamientos</button>
   </div>
 
-  <!-- FILTERS -->
   <div class="filters-bar" id="filtersBar">
     <span class="filter-label">Ver:</span>
-    <button class="fbtn active-ci" id="f-ci" onclick="toggleFilter('ci')">↓ Check-in</button>
-    <button class="fbtn active-co" id="f-co" onclick="toggleFilter('co')">↑ Check-out</button>
+    <button class="fbtn active-ci" id="f-ci" onclick="toggleF('ci')">↓ Check-in</button>
+    <button class="fbtn active-co" id="f-co" onclick="toggleF('co')">↑ Check-out</button>
     <div class="filter-sep"></div>
-    <button class="fbtn active-ab" id="f-ab" onclick="toggleFilter('ab')">Airbnb</button>
-    <button class="fbtn active-bk" id="f-bk" onclick="toggleFilter('bk')">Booking</button>
+    <button class="fbtn active-ab" id="f-ab" onclick="toggleF('ab')">Airbnb</button>
+    <button class="fbtn active-bk" id="f-bk" onclick="toggleF('bk')">Booking</button>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
     <div class="content" id="viewContent">
       <div class="loading-wrap"><div class="spinner"></div><span>Cargando reservas...<br><small style="color:var(--text3);">Puede tardar ~30s la primera vez</small></span></div>
@@ -380,7 +341,6 @@
             <div class="sb-item"><div class="sb-lbl">Huésped</div><div class="sb-val" id="sbGuest"></div></div>
           </div>
         </div>
-        <!-- ASSIGNMENT PANEL (only for checkouts) -->
         <div class="assign-panel" id="assignPanel"></div>
         <div class="sb-comments" id="sbComments">
           <div class="sb-ctitle">Notas del equipo</div>
@@ -396,690 +356,403 @@
 </div>
 
 <script>
-// ── EQUIPO & CLEANERS ─────────────────────────────────────────────────────────
-let TEAM = [
-  { name:'Mike B.',     role:'Administrador',  color:'#185FA5', bg:'#E6F1FB' },
-  { name:'Claudia',    role:'Coord. Cleaners', color:'#1D9E75', bg:'#E1F5EE' },
-  { name:'Mike David', role:'Mantenimiento',   color:'#BA7517', bg:'#FAEEDA' },
+const TEAM = [
+  {name:'Mike B.',    role:'Administrador',  color:'#185FA5',bg:'#E6F1FB'},
+  {name:'Claudia',   role:'Coord. Cleaners',color:'#1D9E75',bg:'#E1F5EE'},
+  {name:'Mike David',role:'Mantenimiento',  color:'#BA7517',bg:'#FAEEDA'},
 ];
-let CLEANERS = [
-  'Claudia','Ana','María','Fernanda','Patricia',
-];
-// ─────────────────────────────────────────────────────────────────────────────
+let CLEANERS = ['Claudia','Ana','María','Fernanda','Patricia'];
 
-const MONTHS   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const MONTHS_S = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-const DAYS_S   = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-const DAYS_F   = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const MS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MS2=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const DS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DF=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 
-let currentUser   = null;
-let reservations  = [];
-let properties    = [];
-let activeTab     = 'hoy';
-let selectedRes   = null;
-let commentsCache = {};
-let assignCache   = {};
-let calMonth      = new Date().getMonth();
-let calYear       = new Date().getFullYear();
-let weekOffset    = 0;
-let customDate    = null;
-let fCI=true, fCO=true, fAB=true, fBK=true;
+let me=null, reservations=[], properties=[], tab='hoy', selRes=null;
+let cmtCache={}, asgnCache={}, statusCache=null;
+let calM=new Date().getMonth(), calY=new Date().getFullYear();
+let wkOff=0, customDate=null;
+let fCI=true,fCO=true,fAB=true,fBK=true;
 
-// ── SUPABASE ──────────────────────────────────────────────────────────────────
-async function sbFetch(path, opts={}) {
-  const r = await fetch(SUPABASE_URL+'/rest/v1/'+path, {
-    ...opts,
-    headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})}
-  });
-  if(!r.ok) throw new Error(await r.text());
-  const txt = await r.text();
-  return txt ? JSON.parse(txt) : [];
+// SUPABASE
+async function sbFetch(path,opts={}){
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,{...opts,headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})}});
+  const txt=await r.text();
+  if(!r.ok) throw new Error(txt);
+  return txt?JSON.parse(txt):[];
 }
 
-async function loadComments(id) {
-  try { const rows=await sbFetch(`comments?reservation_id=eq.${encodeURIComponent(id)}&order=created_at.asc`); commentsCache[id]=rows; return rows; }
-  catch(e){ return []; }
+async function loadComments(id){
+  try{const r=await sbFetch('comments?reservation_id=eq.'+encodeURIComponent(id)+'&order=created_at.asc');cmtCache[id]=r;return r;}
+  catch(e){return[];}
 }
-async function saveComment(id,propName,text) {
-  const row=await sbFetch('comments',{method:'POST',body:JSON.stringify({reservation_id:id,prop_name:propName,author:currentUser.name,text})});
-  if(!commentsCache[id]) commentsCache[id]=[];
-  commentsCache[id].push(Array.isArray(row)?row[0]:row); return row;
+async function saveComment(id,propName,text){
+  const r=await sbFetch('comments',{method:'POST',body:JSON.stringify({reservation_id:id,prop_name:propName,author:me.name,text})});
+  if(!cmtCache[id])cmtCache[id]=[];
+  const row=Array.isArray(r)?r[0]:r;
+  cmtCache[id].push(row);return row;
 }
-async function deleteComment(commentId, reservationId) {
-  await sbFetch(`comments?id=eq.${commentId}`,{method:'DELETE',headers:{'Prefer':''}});
-  if(commentsCache[reservationId]) commentsCache[reservationId]=commentsCache[reservationId].filter(c=>c.id!==commentId);
+async function deleteComment(cid,rid){
+  await sbFetch('comments?id=eq.'+cid,{method:'DELETE',headers:{'Prefer':''}});
+  if(cmtCache[rid])cmtCache[rid]=cmtCache[rid].filter(c=>c.id!==cid);
 }
-
-async function loadAssignment(id) {
-  try { const rows=await sbFetch(`assignments?reservation_id=eq.${encodeURIComponent(id)}&order=created_at.desc&limit=1`); assignCache[id]=rows[0]||null; return rows[0]||null; }
-  catch(e){ return null; }
+async function loadAssignment(id){
+  try{const r=await sbFetch('assignments?reservation_id=eq.'+encodeURIComponent(id)+'&order=created_at.desc&limit=1');asgnCache[id]=r[0]||null;return r[0]||null;}
+  catch(e){return null;}
 }
-async function saveAssignment(id, propName, checkoutDate, cleanerName, scheduledTime, guestArrival) {
-  // Delete existing first
-  await sbFetch(`assignments?reservation_id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:{'Prefer':''}});
-  const row=await sbFetch('assignments',{method:'POST',body:JSON.stringify({
-    reservation_id:id, prop_name:propName, checkout_date:checkoutDate,
-    cleaner_name:cleanerName, scheduled_time:scheduledTime,
-    guest_arrival:guestArrival||null, assigned_by:currentUser.name
-  })});
-  assignCache[id]=Array.isArray(row)?row[0]:row;
-  return assignCache[id];
+async function saveAssignment(id,propName,coDate,cleaner,time,arrival){
+  await sbFetch('assignments?reservation_id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'Prefer':''}});
+  const r=await sbFetch('assignments',{method:'POST',body:JSON.stringify({reservation_id:id,prop_name:propName,checkout_date:coDate,cleaner_name:cleaner,scheduled_time:time,guest_arrival:arrival||null,assigned_by:me.name})});
+  const row=Array.isArray(r)?r[0]:r;asgnCache[id]=row;return row;
 }
-async function deleteAssignment(id) {
-  await sbFetch(`assignments?reservation_id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:{'Prefer':''}});
-  assignCache[id]=null;
+async function deleteAssignment(id){
+  await sbFetch('assignments?reservation_id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'Prefer':''}});
+  asgnCache[id]=null;
 }
-async function markDone(assignmentId, reservationId) {
-  await sbFetch(`assignments?id=eq.${assignmentId}`,{method:'PATCH',body:JSON.stringify({completed:true,completed_at:new Date().toISOString(),completed_by:currentUser.name})});
-  if(assignCache[reservationId]) { assignCache[reservationId].completed=true; assignCache[reservationId].completed_by=currentUser.name; }
+async function markDone(asgnId,resId){
+  await sbFetch('assignments?id=eq.'+asgnId,{method:'PATCH',body:JSON.stringify({completed:true,completed_at:new Date().toISOString(),completed_by:me.name})});
+  if(asgnCache[resId]){asgnCache[resId].completed=true;asgnCache[resId].completed_by=me.name;}
 }
 
-// ── DATA ──────────────────────────────────────────────────────────────────────
-async function loadData() {
-  try {
+// DATA
+async function loadData(){
+  try{
     const res=await fetch(BACKEND_URL+'/reservations');
     const data=await res.json();
     reservations=data.reservations||[];
     properties=data.properties||[];
     document.getElementById('propBadge').textContent=properties.length+' props';
-    updateTabCounts(); renderView();
-  } catch(e) {
-    document.getElementById('viewContent').innerHTML=`<div class="loading-wrap" style="color:#D94040;"><i class="ti ti-alert-circle" style="font-size:36px;"></i><span>Error al conectar.<br><small>Render puede estar iniciando. Espera 30s y recarga.</small></span></div>`;
+    updateCounts();renderView();
+  }catch(e){
+    document.getElementById('viewContent').innerHTML='<div class="loading-wrap" style="color:#D94040;"><i class="ti ti-alert-circle" style="font-size:36px;"></i><span>Error al conectar.<br><small>Render puede estar iniciando. Espera 30s y recarga.</small></span></div>';
   }
 }
 
-function getEventsForDate(date) {
+function eventsForDate(date){
   const ds=date.toDateString();
   return reservations.filter(r=>{
-    if(!fAB&&r.ota==='airbnb') return false;
-    if(!fBK&&r.ota==='booking') return false;
+    if(!fAB&&r.ota==='airbnb')return false;
+    if(!fBK&&r.ota==='booking')return false;
     const ci=new Date(r.checkin+'T12:00:00').toDateString()===ds;
     const co=new Date(r.checkout+'T12:00:00').toDateString()===ds;
-    if(!fCI&&ci&&!co) return false;
-    if(!fCO&&co&&!ci) return false;
+    if(!fCI&&ci&&!co)return false;
+    if(!fCO&&co&&!ci)return false;
     return ci||co;
-  }).map(r=>({...r, isCi:new Date(r.checkin+'T12:00:00').toDateString()===ds, isCo:new Date(r.checkout+'T12:00:00').toDateString()===ds}));
+  }).map(r=>({...r,isCi:new Date(r.checkin+'T12:00:00').toDateString()===ds,isCo:new Date(r.checkout+'T12:00:00').toDateString()===ds}));
 }
 
-function updateTabCounts() {
-  const today=new Date(); const tomorrow=new Date(); tomorrow.setDate(today.getDate()+1);
-  const setC=(id,n)=>{const el=document.getElementById(id);el.textContent=n;el.className='tab-count'+(n===0?' zero':'');};
-  setC('cnt-hoy',getEventsForDate(today).length);
-  setC('cnt-manana',getEventsForDate(tomorrow).length);
+function updateCounts(){
+  const t=new Date(),m=new Date();m.setDate(t.getDate()+1);
+  const sc=(id,n)=>{const el=document.getElementById(id);el.textContent=n;el.className='tab-count'+(n===0?' zero':'');};
+  sc('cnt-hoy',eventsForDate(t).length);sc('cnt-manana',eventsForDate(m).length);
 }
 
-// ── FILTERS ───────────────────────────────────────────────────────────────────
-function toggleFilter(f) {
-  if(f==='ci')fCI=!fCI; else if(f==='co')fCO=!fCO; else if(f==='ab')fAB=!fAB; else if(f==='bk')fBK=!fBK;
+// FILTERS
+function toggleF(f){
+  if(f==='ci')fCI=!fCI;else if(f==='co')fCO=!fCO;else if(f==='ab')fAB=!fAB;else if(f==='bk')fBK=!fBK;
   const map={ci:['f-ci','active-ci'],co:['f-co','active-co'],ab:['f-ab','active-ab'],bk:['f-bk','active-bk']};
-  const[id,cls]=map[f]; const on={ci:fCI,co:fCO,ab:fAB,bk:fBK}[f];
+  const[id,cls]=map[f];const on={ci:fCI,co:fCO,ab:fAB,bk:fBK}[f];
   document.getElementById(id).classList.toggle(cls,on);
-  updateTabCounts(); renderView();
+  updateCounts();renderView();
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────────────
-function renderView() {
-  document.getElementById('filtersBar').style.display=(activeTab==='calendar'||activeTab==='alojamientos')?'none':'flex';
-  if(activeTab==='hoy'){customDate=null;renderDayView(new Date(),'Hoy');}
-  else if(activeTab==='manana'){customDate=null;const t=new Date();t.setDate(t.getDate()+1);renderDayView(t,'Mañana');}
-  else if(activeTab==='semana'){if(customDate)renderDayView(customDate,dateLabel(customDate));else renderWeekView();}
-  else renderCalView();
+// RENDER
+function renderView(){
+  const fb=document.getElementById('filtersBar');
+  fb.style.display=(tab==='calendar'||tab==='alojamientos')?'none':'flex';
+  if(tab==='hoy'){customDate=null;renderDay(new Date(),'Hoy');}
+  else if(tab==='manana'){customDate=null;const t=new Date();t.setDate(t.getDate()+1);renderDay(t,'Mañana');}
+  else if(tab==='semana'){if(customDate)renderDay(customDate,dLabel(customDate));else renderWeek();}
+  else if(tab==='calendar')renderCal();
+  else renderAloj();
 }
 
-function dateLabel(date){return `${DAYS_F[date.getDay()]} ${date.getDate()} de ${MONTHS[date.getMonth()]}`;}
+function dLabel(d){return DF[d.getDay()]+' '+d.getDate()+' de '+MS[d.getMonth()];}
 
-// ── DAY VIEW ──────────────────────────────────────────────────────────────────
-function renderDayView(date,title) {
-  const evts=getEventsForDate(date);
-  const cis=evts.filter(e=>e.isCi), cos=evts.filter(e=>e.isCo);
+function renderDay(date,title){
+  const evts=eventsForDate(date);
+  const cis=evts.filter(e=>e.isCi),cos=evts.filter(e=>e.isCo);
   const cont=document.getElementById('viewContent');
-  const backBtn=customDate?`<button onclick="customDate=null;renderWeekView();" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px;font-family:var(--font);"><i class="ti ti-arrow-left" style="font-size:15px;"></i> Semana</button>`:'';
-  if(!evts.length){cont.innerHTML=`<div class="day-view">${backBtn}<div class="day-header"><div class="day-title">${title}</div><div class="day-sub">${dateLabel(date)}</div></div><div class="empty-day"><i class="ti ti-coffee"></i><p>Sin movimientos</p><small>No hay check-ins ni check-outs ${title==='Hoy'?'hoy':title==='Mañana'?'mañana':'este día'}</small></div></div>`;return;}
-  let html=`<div class="day-view">${backBtn}<div class="day-header"><div class="day-title">${title}</div><div class="day-sub">${dateLabel(date)}</div></div>`;
-  if(cis.length){html+=`<div class="section-label ci"><i class="ti ti-arrow-down-circle"></i>Check-ins · ${cis.length}</div>`;cis.forEach(r=>{html+=resCardHTML(r,'ci');});}
-  if(cos.length){html+=`<div class="section-label co"><i class="ti ti-arrow-up-circle"></i>Check-outs · ${cos.length}</div>`;cos.forEach(r=>{html+=resCardHTML(r,'co');});}
-  html+='</div>';
-  cont.innerHTML=html;
+  const back=customDate?'<button onclick="customDate=null;renderWeek();" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px;font-family:var(--font);"><i class="ti ti-arrow-left"></i> Semana</button>':'';
+  if(!evts.length){cont.innerHTML='<div class="day-view">'+back+'<div class="day-header"><div class="day-title">'+title+'</div><div class="day-sub">'+dLabel(date)+'</div></div><div class="empty-day"><i class="ti ti-coffee"></i><p>Sin movimientos</p><small>No hay check-ins ni check-outs '+(title==='Hoy'?'hoy':title==='Mañana'?'mañana':'este día')+'</small></div></div>';return;}
+  let h='<div class="day-view">'+back+'<div class="day-header"><div class="day-title">'+title+'</div><div class="day-sub">'+dLabel(date)+'</div></div>';
+  if(cis.length){h+='<div class="section-label ci"><i class="ti ti-arrow-down-circle"></i>Check-ins · '+cis.length+'</div>';cis.forEach(r=>{h+=cardHTML(r,'ci');});}
+  if(cos.length){h+='<div class="section-label co"><i class="ti ti-arrow-up-circle"></i>Check-outs · '+cos.length+'</div>';cos.forEach(r=>{h+=cardHTML(r,'co');});}
+  h+='</div>';cont.innerHTML=h;
 }
 
-function resCardHTML(r,type) {
-  const otaBadge=r.ota==='airbnb'?`<span class="badge ab">Airbnb</span>`:`<span class="badge bk">Booking</span>`;
-  const typeBadge=type==='ci'?`<span class="badge ci">↓ Check-in</span>`:`<span class="badge co">↑ Check-out</span>`;
-  const ci=new Date(r.checkin+'T12:00:00'), co=new Date(r.checkout+'T12:00:00');
-  const hasC=(commentsCache[r.id]||[]).length>0;
-  const asgn=assignCache[r.id];
-  let footer='';
-  if(hasC||asgn){
-    footer='<div class="res-card-footer">';
-    if(asgn){
-      if(asgn.completed) footer+=`<span class="res-card-done"><i class="ti ti-circle-check"></i>Limpieza lista · ${asgn.completed_by}</span>`;
-      else footer+=`<span class="res-card-assigned"><i class="ti ti-user-check"></i>${asgn.cleaner_name} · ${asgn.scheduled_time}</span>`;
-    }
-    if(hasC) footer+=`<span class="res-card-note"><i class="ti ti-message-circle"></i>${(commentsCache[r.id]||[]).length} nota${(commentsCache[r.id]||[]).length>1?'s':''}</span>`;
-    footer+='</div>';
+function cardHTML(r,type){
+  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':'<span class="badge bk">Booking</span>';
+  const typ=type==='ci'?'<span class="badge ci">↓ Check-in</span>':'<span class="badge co">↑ Check-out</span>';
+  const ci=new Date(r.checkin+'T12:00:00'),co=new Date(r.checkout+'T12:00:00');
+  const hasC=(cmtCache[r.id]||[]).length>0;
+  const a=asgnCache[r.id];
+  let foot='';
+  if(hasC||a){
+    foot='<div class="res-card-footer">';
+    if(a)foot+=a.completed?'<span class="res-card-done"><i class="ti ti-circle-check"></i>Listo · '+a.completed_by+'</span>':'<span class="res-card-assigned"><i class="ti ti-user-check"></i>'+a.cleaner_name+' · '+a.scheduled_time+'</span>';
+    if(hasC)foot+='<span class="res-card-note"><i class="ti ti-message-circle"></i>'+(cmtCache[r.id]||[]).length+' nota'+(cmtCache[r.id].length>1?'s':'')+'</span>';
+    foot+='</div>';
   }
-  return `<div class="res-card ${type}" onclick="openEvent('${r.id}')">
-    <div class="res-card-top"><div class="res-card-prop">${r.propName}</div><div class="res-card-badges">${typeBadge}${otaBadge}</div></div>
-    <div class="res-card-grid">
-      <div class="res-card-item"><div class="res-card-lbl">Check-in</div><div class="res-card-val">${ci.getDate()} ${MONTHS_S[ci.getMonth()]}</div></div>
-      <div class="res-card-item"><div class="res-card-lbl">Check-out</div><div class="res-card-val">${co.getDate()} ${MONTHS_S[co.getMonth()]}</div></div>
-      <div class="res-card-item"><div class="res-card-lbl">Noches</div><div class="res-card-val">${r.nights}</div></div>
-      <div class="res-card-item"><div class="res-card-lbl">Huésped</div><div class="res-card-val">${r.guest||'—'}</div></div>
-    </div>${footer}
-  </div>`;
+  return '<div class="res-card '+type+'" onclick="openEvent(\''+r.id+'\')"><div class="res-card-top"><div class="res-card-prop">'+r.propName+'</div><div class="res-card-badges">'+typ+ota+'</div></div><div class="res-card-grid"><div class="res-card-item"><div class="res-card-lbl">Check-in</div><div class="res-card-val">'+ci.getDate()+' '+MS2[ci.getMonth()]+'</div></div><div class="res-card-item"><div class="res-card-lbl">Check-out</div><div class="res-card-val">'+co.getDate()+' '+MS2[co.getMonth()]+'</div></div><div class="res-card-item"><div class="res-card-lbl">Noches</div><div class="res-card-val">'+r.nights+'</div></div><div class="res-card-item"><div class="res-card-lbl">Huésped</div><div class="res-card-val">'+(r.guest||'—')+'</div></div></div>'+foot+'</div>';
 }
 
-// ── WEEK VIEW ─────────────────────────────────────────────────────────────────
-function renderWeekView() {
+function renderWeek(){
   customDate=null;
   const today=new Date();
-  // Always start from today, only go forward
-  const start=new Date(today); start.setDate(today.getDate()+weekOffset*7);
-  const days=[]; for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
-  const label=`${days[0].getDate()} ${MONTHS_S[days[0].getMonth()]} — ${days[6].getDate()} ${MONTHS_S[days[6].getMonth()]} ${days[6].getFullYear()}`;
-
-  let html=`<div class="week-view">
-    <div class="week-nav">
-      ${weekOffset>0?`<button onclick="weekOffset--;renderView()"><i class="ti ti-chevron-left"></i></button>`:`<button style="opacity:0.3;cursor:default;"><i class="ti ti-chevron-left"></i></button>`}
-      <div class="week-title">${label}</div>
-      ${weekOffset>0?`<button class="today-btn" onclick="weekOffset=0;renderView()">Hoy</button>`:''}
-      <button onclick="weekOffset++;renderView()"><i class="ti ti-chevron-right"></i></button>
-    </div>`;
-
+  const start=new Date(today);start.setDate(today.getDate()+wkOff*7);
+  const days=[];for(let i=0;i<7;i++){const d=new Date(start);d.setDate(start.getDate()+i);days.push(d);}
+  const lbl=days[0].getDate()+' '+MS2[days[0].getMonth()]+' — '+days[6].getDate()+' '+MS2[days[6].getMonth()]+' '+days[6].getFullYear();
+  let h='<div class="week-view"><div class="week-nav">';
+  h+=wkOff>0?'<button onclick="wkOff--;renderView()"><i class="ti ti-chevron-left"></i></button>':'<button style="opacity:0.3;cursor:default;"><i class="ti ti-chevron-left"></i></button>';
+  h+='<div class="week-title">'+lbl+'</div>';
+  h+=wkOff>0?'<button class="wtoday" onclick="wkOff=0;renderView()">Hoy</button>':'';
+  h+='<button onclick="wkOff++;renderView()"><i class="ti ti-chevron-right"></i></button></div>';
   days.forEach(day=>{
-    const isToday=day.toDateString()===today.toDateString();
-    const evts=getEventsForDate(day);
-    const cis=evts.filter(e=>e.isCi), cos=evts.filter(e=>e.isCo);
-    html+=`<div class="week-day ${isToday?'week-today':''}">
-      <div class="week-day-header">
-        <div class="week-day-num">${day.getDate()}</div>
-        <div class="week-day-name">${DAYS_F[day.getDay()]} ${MONTHS_S[day.getMonth()]}</div>
-        ${cis.length?`<span class="badge ci" style="font-size:10px;">↓ ${cis.length}</span>`:''}
-        ${cos.length?`<span class="badge co" style="font-size:10px;">↑ ${cos.length}</span>`:''}
-      </div>`;
-    if(!evts.length){html+=`<div class="week-no-events">Sin movimientos</div>`;}
-    else {
-      [...cis,...cos].forEach(r=>{
-        const type=cis.includes(r)?'ci':'co';
-        const asgn=assignCache[r.id];
-        html+=`<div class="week-event ${type}" onclick="openEvent('${r.id}')">
-          <div class="week-event-info">
-            <div class="week-event-prop">${r.propName}</div>
-            <div class="week-event-sub">${r.nights} noches · ${r.guest||'Huésped'}${asgn?` · <span style="color:var(--purple)">${asgn.completed?'✓ '+asgn.completed_by:asgn.cleaner_name+' '+asgn.scheduled_time}</span>`:''}</div>
-          </div>
-          <div class="week-event-right">
-            <span class="badge ${type}" style="font-size:10px;">${type==='ci'?'↓ In':'↑ Out'}</span>
-            <span class="badge ${r.ota==='airbnb'?'ab':'bk'}" style="font-size:10px;">${r.ota==='airbnb'?'AB':'BK'}</span>
-          </div>
-        </div>`;
-      });
-    }
-    html+='</div>';
+    const isT=day.toDateString()===today.toDateString();
+    const evts=eventsForDate(day);
+    const cis=evts.filter(e=>e.isCi),cos=evts.filter(e=>e.isCo);
+    h+='<div class="week-day '+(isT?'week-today':'')+'"><div class="week-day-header"><div class="week-day-num">'+day.getDate()+'</div><div class="week-day-name">'+DF[day.getDay()]+' '+MS2[day.getMonth()]+'</div>';
+    if(cis.length)h+='<span class="badge ci" style="font-size:10px;">↓ '+cis.length+'</span>';
+    if(cos.length)h+='<span class="badge co" style="font-size:10px;">↑ '+cos.length+'</span>';
+    h+='</div>';
+    if(!evts.length){h+='<div class="week-no-events">Sin movimientos</div>';}
+    else{[...cis,...cos].forEach(r=>{
+      const type=cis.includes(r)?'ci':'co';
+      const a=asgnCache[r.id];
+      h+='<div class="week-event '+type+'" onclick="openEvent(\''+r.id+'\')"><div class="week-event-info"><div class="week-event-prop">'+r.propName+'</div><div class="week-event-sub">'+r.nights+' noches · '+(r.guest||'Huésped')+(a?' · <span style="color:var(--purple)">'+(a.completed?'✓ '+a.completed_by:a.cleaner_name+' '+a.scheduled_time)+'</span>':'')+'</div></div><div class="week-event-right"><span class="badge '+type+'" style="font-size:10px;">'+(type==='ci'?'↓ In':'↑ Out')+'</span><span class="badge '+(r.ota==='airbnb'?'ab':'bk')+'" style="font-size:10px;">'+(r.ota==='airbnb'?'AB':'BK')+'</span></div></div>';
+    });}
+    h+='</div>';
   });
-  html+='</div>';
-  document.getElementById('viewContent').innerHTML=html;
+  h+='</div>';
+  document.getElementById('viewContent').innerHTML=h;
 }
 
-// ── CALENDAR VIEW ─────────────────────────────────────────────────────────────
-function renderCalView() {
-  const first=new Date(calYear,calMonth,1).getDay();
-  const dim=new Date(calYear,calMonth+1,0).getDate();
-  const prevDim=new Date(calYear,calMonth,0).getDate();
+function renderCal(){
+  const first=new Date(calY,calM,1).getDay();
+  const dim=new Date(calY,calM+1,0).getDate();
+  const pDim=new Date(calY,calM,0).getDate();
   const today=new Date();
   let cells=[];
-  for(let i=first-1;i>=0;i--) cells.push({d:prevDim-i,other:true,date:new Date(calYear,calMonth-1,prevDim-i)});
-  for(let d=1;d<=dim;d++)     cells.push({d,other:false,date:new Date(calYear,calMonth,d)});
-  while(cells.length%7){const n=cells.length-dim-first+1;cells.push({d:n,other:true,date:new Date(calYear,calMonth+1,n)});}
-
-  let html=`<div class="cal-view">
-    <div class="cal-nav-row">
-      <button onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalView()"><i class="ti ti-chevron-left"></i></button>
-      <div class="cal-month-label">${MONTHS[calMonth]} ${calYear}</div>
-      <button class="today-btn" onclick="calMonth=new Date().getMonth();calYear=new Date().getFullYear();renderCalView()">Hoy</button>
-      <button onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalView()"><i class="ti ti-chevron-right"></i></button>
-    </div>
-    <div class="cal-grid">
-      <div class="cal-weekdays">${DAYS_S.map(d=>`<div class="cal-wd">${d}</div>`).join('')}</div>
-      <div class="cal-days">`;
-
+  for(let i=first-1;i>=0;i--)cells.push({d:pDim-i,other:true,date:new Date(calY,calM-1,pDim-i)});
+  for(let d=1;d<=dim;d++)cells.push({d,other:false,date:new Date(calY,calM,d)});
+  while(cells.length%7){const n=cells.length-dim-first+1;cells.push({d:n,other:true,date:new Date(calY,calM+1,n)});}
+  let h='<div class="cal-view"><div class="cal-nav-row"><button onclick="calM--;if(calM<0){calM=11;calY--;}renderCal()"><i class="ti ti-chevron-left"></i></button><div class="cal-month-label">'+MS[calM]+' '+calY+'</div><button class="ctoday-btn" onclick="calM=new Date().getMonth();calY=new Date().getFullYear();renderCal()">Hoy</button><button onclick="calM++;if(calM>11){calM=0;calY++;}renderCal()"><i class="ti ti-chevron-right"></i></button></div><div class="cal-grid"><div class="cal-weekdays">'+DS.map(d=>'<div class="cal-wd">'+d+'</div>').join('')+'</div><div class="cal-days">';
   cells.forEach(cell=>{
-    const isToday=!cell.other&&cell.date.toDateString()===today.toDateString();
-    const allEvts=reservations.filter(r=>{
-      const ds=cell.date.toDateString();
-      return new Date(r.checkin+'T12:00:00').toDateString()===ds||new Date(r.checkout+'T12:00:00').toDateString()===ds;
-    });
-    const ciCount=allEvts.filter(r=>new Date(r.checkin+'T12:00:00').toDateString()===cell.date.toDateString()).length;
-    const coCount=allEvts.filter(r=>new Date(r.checkout+'T12:00:00').toDateString()===cell.date.toDateString()).length;
-    const hasNote=allEvts.some(r=>(commentsCache[r.id]||[]).length>0);
-    const hasEvts=allEvts.length>0&&!cell.other;
-    html+=`<div class="cal-day${cell.other?' other':''}${isToday?' today':''}${hasEvts?' has-events':''}" 
-      ${hasEvts?`onclick="openCalDay('${cell.date.toISOString().slice(0,10)}')"`:''} style="${!hasEvts||cell.other?'cursor:default;':''}">
-      <div class="dn">${cell.d}</div>
-      ${hasNote?'<div class="has-note-dot"></div>':''}
-      ${ciCount>0?`<div class="cal-pill ci">↓ ${ciCount} in</div>`:''}
-      ${coCount>0?`<div class="cal-pill co">↑ ${coCount} out</div>`:''}
-    </div>`;
+    const isT=!cell.other&&cell.date.toDateString()===today.toDateString();
+    const ds=cell.date.toDateString();
+    const all=reservations.filter(r=>new Date(r.checkin+'T12:00:00').toDateString()===ds||new Date(r.checkout+'T12:00:00').toDateString()===ds);
+    const ciN=all.filter(r=>new Date(r.checkin+'T12:00:00').toDateString()===ds).length;
+    const coN=all.filter(r=>new Date(r.checkout+'T12:00:00').toDateString()===ds).length;
+    const hasNote=all.some(r=>(cmtCache[r.id]||[]).length>0);
+    const has=all.length>0&&!cell.other;
+    h+='<div class="cal-day'+(cell.other?' other':'')+(isT?' today':'')+(has?' has-events':'')+'" '+(has?'onclick="openCalDay(\''+cell.date.toISOString().slice(0,10)+'\')"':'')+' style="'+(has?'':'cursor:default;')+'"><div class="dn">'+cell.d+'</div>'+(hasNote?'<div class="has-note-dot"></div>':'')+(ciN>0?'<div class="cal-pill ci">↓ '+ciN+' in</div>':'')+(coN>0?'<div class="cal-pill co">↑ '+coN+' out</div>':'')+'</div>';
   });
-  html+='</div></div></div>';
-  document.getElementById('viewContent').innerHTML=html;
+  h+='</div></div></div>';
+  document.getElementById('viewContent').innerHTML=h;
 }
 
-function openCalDay(dateStr) {
-  const date=new Date(dateStr+'T12:00:00');
-  customDate=date;
-  const today=new Date();
-  const diff=Math.round((date-today)/(1000*60*60*24));
-  weekOffset=Math.max(0,Math.floor(diff/7));
-  switchTab('semana',document.getElementById('tab-semana'));
-  renderDayView(date,dateLabel(date));
+function openCalDay(ds){
+  const date=new Date(ds+'T12:00:00');customDate=date;
+  const today=new Date();const diff=Math.round((date-today)/(1000*60*60*24));
+  wkOff=Math.max(0,Math.floor(diff/7));
+  setTab('semana',document.getElementById('tab-semana'));
+  renderDay(date,dLabel(date));
 }
 
-// ── EVENT DETAIL ──────────────────────────────────────────────────────────────
-async function openEvent(id) {
-  selectedRes=reservations.find(r=>r.id===id);
-  if(!selectedRes) return;
-  const r=selectedRes;
-  const ci=new Date(r.checkin+'T12:00:00'), co=new Date(r.checkout+'T12:00:00');
-  const otaBadge=r.ota==='airbnb'?`<span class="badge ab">Airbnb</span>`:`<span class="badge bk">Booking</span>`;
+// ALOJAMIENTOS
+async function renderAloj(){
+  const cont=document.getElementById('viewContent');
+  const isAdmin=me&&me.name==='Mike B.';
+  let props=[];
+  try{props=await sbFetch('properties?active=eq.true&order=ota.asc,name.asc');}
+  catch(e){props=properties.map(p=>({id:p.id,name:p.name,ota:p.ota,ical_url:''}));}
+  const ab=props.filter(p=>p.ota==='airbnb');
+  const bk=props.filter(p=>p.ota==='booking');
 
-  // Load data in parallel
-  const [cmts,asgn]=await Promise.all([loadComments(r.id),loadAssignment(r.id)]);
+  const propRow=(p)=>{
+    const s=statusCache?statusCache[p.id]:null;
+    const sc=!s?'loading':s.ok?'ok':'error';
+    const st=!s?'Sin verificar':s.ok?'OK · '+s.events+' reserva'+(s.events!==1?'s':''):'Error';
+    return '<div class="prop-item"><div class="prop-dot '+sc+'"></div><div style="flex:1;min-width:0;"><div class="prop-item-name">'+p.name+'</div><div class="prop-item-sub">'+(p.ota==='airbnb'?'Airbnb':'Booking.com')+'</div></div><div style="display:flex;align-items:center;gap:6px;"><div class="prop-status '+sc+'">'+st+'</div>'+(isAdmin?'<button onclick="editProp(\''+p.id+'\',\''+p.name.replace(/'/g,"\\'")+'\'  ,\''+p.ota+'\',\''+((p.ical_url||'').replace(/'/g,"\\'"))+'\')" style="background:none;border:none;cursor:pointer;font-size:13px;">✏️</button>':'')+'</div></div>';
+  };
 
-  if(window.innerWidth<=680) {
-    renderMobSheet(r,ci,co,otaBadge,cmts,asgn);
-  } else {
-    renderDesktopSidebar(r,ci,co,otaBadge,cmts,asgn);
-  }
-  renderView(); // refresh cards to show assignment status
+  const formHTML=isAdmin?'<div id="propForm" style="display:none;" class="prop-form"><div class="prop-form-title" id="propFormTitle">Nueva propiedad</div><input type="hidden" id="pfId"><input class="form-input" id="pfName" placeholder="Nombre de la propiedad"><select class="form-input" id="pfOta"><option value="airbnb">Airbnb</option><option value="booking">Booking.com</option></select><input class="form-input" id="pfUrl" placeholder="URL del calendario iCal..."><div class="form-row"><button class="btn-save" onclick="saveProp()">Guardar</button><button class="btn-cancel" onclick="document.getElementById(\'propForm\').style.display=\'none\'">Cancelar</button></div></div>':'';
+
+  cont.innerHTML='<div class="prop-list"><div class="prop-summary"><div class="prop-summary-card"><div class="prop-summary-num">'+props.length+'</div><div class="prop-summary-lbl">Total</div></div><div class="prop-summary-card" style="border-color:#FF5A5F44;"><div class="prop-summary-num" style="color:#CC2222;">'+ab.length+'</div><div class="prop-summary-lbl">Airbnb</div></div><div class="prop-summary-card" style="border-color:#378ADD44;"><div class="prop-summary-num" style="color:var(--blue);">'+bk.length+'</div><div class="prop-summary-lbl">Booking</div></div></div>'+formHTML+'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div class="prop-section-title"><i class="ti ti-home" style="font-size:13px;color:#CC2222;"></i>Airbnb · '+ab.length+'</div><div style="display:flex;gap:8px;">'+(isAdmin?'<button class="add-btn" onclick="showPropForm()"><i class="ti ti-plus"></i> Agregar</button>':'')+'<button class="sync-btn" onclick="verifyProps()"><i class="ti ti-refresh" style="font-size:13px;"></i>Verificar</button></div></div>'+ab.map(propRow).join('')+'<div class="prop-section-title" style="margin-top:16px;"><i class="ti ti-hotel-service" style="font-size:13px;color:var(--blue);"></i>Booking.com · '+bk.length+'</div>'+bk.map(propRow).join('')+'</div>';
 }
 
-function renderDesktopSidebar(r,ci,co,otaBadge,cmts,asgn) {
+function showPropForm(){
+  document.getElementById('propFormTitle').textContent='Nueva propiedad';
+  document.getElementById('pfId').value='';
+  document.getElementById('pfName').value='';
+  document.getElementById('pfOta').value='airbnb';
+  document.getElementById('pfUrl').value='';
+  document.getElementById('propForm').style.display='block';
+  document.getElementById('pfName').focus();
+}
+function editProp(id,name,ota,url){
+  document.getElementById('propFormTitle').textContent='Editar propiedad';
+  document.getElementById('pfId').value=id;
+  document.getElementById('pfName').value=name;
+  document.getElementById('pfOta').value=ota;
+  document.getElementById('pfUrl').value=url;
+  document.getElementById('propForm').style.display='block';
+  document.getElementById('pfName').focus();
+}
+async function saveProp(){
+  const id=document.getElementById('pfId').value;
+  const name=document.getElementById('pfName').value.trim();
+  const ota=document.getElementById('pfOta').value;
+  const url=document.getElementById('pfUrl').value.trim();
+  if(!name||!url){alert('Completa nombre y URL iCal.');return;}
+  try{
+    if(id){await sbFetch('properties?id=eq.'+id,{method:'PATCH',body:JSON.stringify({name,ota,ical_url:url})});}
+    else{const nid='p'+Date.now();await sbFetch('properties',{method:'POST',body:JSON.stringify({id:nid,name,ota,ical_url:url,active:true})});}
+    await fetch(BACKEND_URL+'/invalidate',{method:'POST'}).catch(()=>{});
+    statusCache=null;
+    document.getElementById('propForm').style.display='none';
+    await renderAloj();loadData();
+  }catch(e){alert('Error: '+e.message);}
+}
+async function verifyProps(){
+  try{
+    const res=await fetch(BACKEND_URL+'/status');
+    const data=await res.json();
+    statusCache={};
+    data.results.forEach(r=>{statusCache[r.id]=r;});
+  }catch(e){statusCache={};}
+  await renderAloj();
+}
+
+// EVENT DETAIL
+async function openEvent(id){
+  selRes=reservations.find(r=>r.id===id);
+  if(!selRes)return;
+  const r=selRes;
+  const ci=new Date(r.checkin+'T12:00:00'),co=new Date(r.checkout+'T12:00:00');
+  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':'<span class="badge bk">Booking</span>';
+  const[cmts,asgn]=await Promise.all([loadComments(r.id),loadAssignment(r.id)]);
+  if(window.innerWidth<=680){renderMob(r,ci,co,ota,cmts,asgn);}
+  else{renderSidebar(r,ci,co,ota,cmts,asgn);}
+  renderView();
+}
+
+function renderSidebar(r,ci,co,ota,cmts,asgn){
   document.getElementById('sbEmpty').style.display='none';
   document.getElementById('sbContent').style.display='flex';
   document.getElementById('sbProp').textContent=r.propName;
-  document.getElementById('sbBadges').innerHTML=`<span class="badge ci">↓ ${ci.getDate()}/${ci.getMonth()+1}</span><span class="badge co">↑ ${co.getDate()}/${co.getMonth()+1}</span>${otaBadge}`;
-  document.getElementById('sbCi').textContent=`${ci.getDate()} ${MONTHS_S[ci.getMonth()]}`;
-  document.getElementById('sbCo').textContent=`${co.getDate()} ${MONTHS_S[co.getMonth()]}`;
-  document.getElementById('sbNights').textContent=`${r.nights} noche${r.nights>1?'s':''}`;
+  document.getElementById('sbBadges').innerHTML='<span class="badge ci">↓ '+ci.getDate()+'/'+(ci.getMonth()+1)+'</span><span class="badge co">↑ '+co.getDate()+'/'+(co.getMonth()+1)+'</span>'+ota;
+  document.getElementById('sbCi').textContent=ci.getDate()+' '+MS2[ci.getMonth()];
+  document.getElementById('sbCo').textContent=co.getDate()+' '+MS2[co.getMonth()];
+  document.getElementById('sbNights').textContent=r.nights+' noche'+(r.nights>1?'s':'');
   document.getElementById('sbGuest').textContent=r.guest||'—';
-  renderAssignPanel(r,asgn);
-  renderDesktopComments(cmts,r.id);
+  renderAssign(r,asgn);
+  renderCmts(cmts,r.id,'commentList');
 }
 
-function renderAssignPanel(r,asgn) {
+function renderAssign(r,asgn){
   const panel=document.getElementById('assignPanel');
-  // Only show assignment for checkouts
-  const isCheckout=r.isCo!==undefined?r.isCo:true;
-  if(!isCheckout){panel.innerHTML='';return;}
-
-  if(asgn&&asgn.completed) {
-    panel.innerHTML=`<div class="assign-panel" style="background:var(--teal-l);">
-      <div class="assign-done-banner"><i class="ti ti-circle-check" style="font-size:20px;"></i><div><strong>Limpieza completada</strong><br><span style="font-size:11px;">Por ${asgn.completed_by} · ${new Date(asgn.completed_at).toLocaleDateString('es-CL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span></div></div>
-    </div>`;
-    return;
-  }
-
-  if(asgn) {
-    panel.innerHTML=`<div class="assign-title"><i class="ti ti-user-check"></i>Cleaner asignado</div>
-      <div class="assign-current">
-        <div class="assign-info-row">
-          <div class="assign-info"><strong>${asgn.cleaner_name}</strong> · ${asgn.scheduled_time}</div>
-          <div style="display:flex;gap:6px;">
-            <button class="mark-done-btn" onclick="markDoneClick('${asgn.id}','${r.id}')">✓ Listo</button>
-            <button class="assign-btn danger" style="padding:5px 10px;font-size:11px;" onclick="deleteAssignClick('${r.id}')">×</button>
-          </div>
-        </div>
-        ${asgn.guest_arrival?`<div style="font-size:12px;color:var(--text2);padding:6px 8px;background:var(--amber-l);border-radius:6px;"><i class="ti ti-info-circle" style="font-size:12px;color:var(--amber);"></i> ${asgn.guest_arrival}</div>`:''}
-        <div style="font-size:11px;color:var(--text3);">Asignado por ${asgn.assigned_by}</div>
-      </div>`;
-    return;
-  }
-
-  // No assignment yet — show form
+  if(asgn&&asgn.completed){panel.innerHTML='<div class="assign-panel"><div class="assign-done"><i class="ti ti-circle-check" style="font-size:20px;"></i><div><strong>Limpieza completada</strong><br><span style="font-size:11px;">Por '+asgn.completed_by+' · '+new Date(asgn.completed_at).toLocaleDateString('es-CL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+'</span></div></div></div>';return;}
+  if(asgn){panel.innerHTML='<div class="assign-panel"><div class="assign-title"><i class="ti ti-user-check"></i> Cleaner asignado</div><div class="assign-current"><div class="assign-info" style="display:flex;justify-content:space-between;align-items:center;"><span><strong>'+asgn.cleaner_name+'</strong> · '+asgn.scheduled_time+'</span><div style="display:flex;gap:6px;"><button class="mark-done-btn" onclick="markDoneClick(\''+asgn.id+'\',\''+r.id+'\')">✓ Listo</button><button onclick="deleteAsgnClick(\''+r.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:16px;">×</button></div></div>'+(asgn.guest_arrival?'<div style="font-size:12px;color:var(--text2);padding:6px 8px;background:var(--amber-l);border-radius:6px;">'+asgn.guest_arrival+'</div>':'')+'<div style="font-size:11px;color:var(--text3);">Asignado por '+asgn.assigned_by+'</div></div></div>';return;}
   const coDate=new Date(r.checkout+'T12:00:00').toISOString().slice(0,10);
-  panel.innerHTML=`<div class="assign-title"><i class="ti ti-user-plus"></i>Asignar cleaner</div>
-    <div class="assign-form">
-      <div class="assign-row">
-        <select class="assign-select" id="asgn-cleaner">
-          <option value="">Seleccionar cleaner...</option>
-          ${CLEANERS.map(c=>`<option value="${c}">${c}</option>`).join('')}
-          <option value="__new">+ Agregar nuevo...</option>
-        </select>
-        <input type="time" class="assign-input" id="asgn-time" value="10:00" style="max-width:100px;">
-      </div>
-      <input type="text" class="assign-input" id="asgn-arrival" placeholder="Hora llegada próx. huéspedes (opcional)" style="width:100%;">
-      <button class="assign-btn" onclick="saveAssignClick('${r.id}','${r.propName}','${coDate}')"><i class="ti ti-check"></i> Guardar asignación</button>
-    </div>`;
-
-  document.getElementById('asgn-cleaner').addEventListener('change',function(){
-    if(this.value==='__new'){
-      const name=prompt('Nombre del nuevo cleaner:');
-      if(name&&name.trim()){
-        CLEANERS.push(name.trim());
-        const opt=document.createElement('option');
-        opt.value=name.trim(); opt.textContent=name.trim();
-        this.insertBefore(opt,this.querySelector('[value="__new"]'));
-        this.value=name.trim();
-      } else { this.value=''; }
-    }
-  });
+  panel.innerHTML='<div class="assign-panel"><div class="assign-title"><i class="ti ti-user-plus"></i> Asignar cleaner</div><div class="assign-form"><div class="assign-row"><select class="assign-select" id="aClnr" style="flex:1;"><option value="">Seleccionar...</option>'+CLEANERS.map(c=>'<option>'+c+'</option>').join('')+'<option value="__new">+ Agregar nuevo...</option></select><input type="time" class="assign-input" id="aTime" value="10:00" style="width:90px;"></div><input class="assign-input" id="aArrival" placeholder="Llegada próx. huéspedes (opcional)" style="width:100%;"><button class="assign-btn" onclick="saveAsgnClick(\''+r.id+'\',\''+r.propName.replace(/'/g,"\\'")+'\',\''+coDate+'\')" style="width:100%;"><i class="ti ti-check"></i> Guardar asignación</button></div></div>';
+  document.getElementById('aClnr').addEventListener('change',function(){if(this.value==='__new'){const n=prompt('Nombre del nuevo cleaner:');if(n&&n.trim()){CLEANERS.push(n.trim());const o=document.createElement('option');o.value=n.trim();o.textContent=n.trim();this.insertBefore(o,this.querySelector('[value="__new"]'));this.value=n.trim();}else this.value='';}});
 }
 
-async function saveAssignClick(resId,propName,coDate) {
-  if(!currentUser){openModal();return;}
-  const cleaner=document.getElementById('asgn-cleaner').value;
-  const time=document.getElementById('asgn-time').value;
-  const arrival=document.getElementById('asgn-arrival').value.trim();
-  if(!cleaner){alert('Selecciona un cleaner.');return;}
-  if(!time){alert('Indica la hora.');return;}
-  const btn=document.querySelector('.assign-btn');
-  btn.textContent='Guardando...'; btn.disabled=true;
-  try {
-    const asgn=await saveAssignment(resId,propName,coDate,cleaner,time,arrival);
-    const r=reservations.find(x=>x.id===resId);
-    renderAssignPanel({...r,isCo:true},asgn);
-    renderView();
-  } catch(e){ alert('Error al guardar.'); btn.textContent='Guardar asignación'; btn.disabled=false; }
+async function saveAsgnClick(id,propName,coDate){
+  if(!me){openModal();return;}
+  const c=document.getElementById('aClnr').value,t=document.getElementById('aTime').value,a=document.getElementById('aArrival').value.trim();
+  if(!c){alert('Selecciona un cleaner.');return;}
+  const asgn=await saveAssignment(id,propName,coDate,c,t,a);
+  const r=reservations.find(x=>x.id===id);renderAssign(r,asgn);renderView();
 }
-
-async function markDoneClick(asgnId,resId) {
-  if(!currentUser){openModal();return;}
+async function markDoneClick(asgnId,resId){
+  if(!me){openModal();return;}
   await markDone(asgnId,resId);
-  const r=reservations.find(x=>x.id===resId);
-  renderAssignPanel({...r,isCo:true},assignCache[resId]);
-  renderView();
+  const r=reservations.find(x=>x.id===resId);renderAssign(r,asgnCache[resId]);renderView();
 }
-
-async function deleteAssignClick(resId) {
-  if(!confirm('¿Quitar esta asignación?')) return;
+async function deleteAsgnClick(resId){
+  if(!confirm('¿Quitar esta asignación?'))return;
   await deleteAssignment(resId);
-  const r=reservations.find(x=>x.id===resId);
-  renderAssignPanel({...r,isCo:true},null);
-  renderView();
+  const r=reservations.find(x=>x.id===resId);renderAssign(r,null);renderView();
 }
 
-// ── COMMENTS ──────────────────────────────────────────────────────────────────
-function commentHTML(c, reservationId) {
+function cmtHTML(c,rid){
   const u=TEAM.find(t=>t.name===c.author)||{color:'var(--teal-d)',bg:'var(--teal-l)'};
   const ts=new Date(c.created_at);
-  const canDelete=currentUser&&currentUser.name===c.author;
-  return `<div class="comment">
-    <div class="cav" style="background:${u.bg};color:${u.color};">${(c.author||'?').slice(0,2).toUpperCase()}</div>
-    <div class="cbody">
-      <div class="cmeta"><span class="cauthor">${c.author}</span><span class="ctime">${ts.toLocaleDateString('es-CL',{day:'numeric',month:'short'})} ${ts.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}</span></div>
-      <div class="ctext">${c.text}</div>
-    </div>
-    ${canDelete?`<button class="cdel" onclick="deleteCommentClick('${c.id}','${reservationId}')" title="Eliminar">×</button>`:''}
-  </div>`;
+  const canDel=me&&me.name===c.author;
+  return '<div class="comment"><div class="cav" style="background:'+u.bg+';color:'+u.color+';">'+(c.author||'?').slice(0,2).toUpperCase()+'</div><div class="cbody"><div class="cmeta"><span class="cauthor">'+c.author+'</span><span class="ctime">'+ts.toLocaleDateString('es-CL',{day:'numeric',month:'short'})+' '+ts.toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})+'</span></div><div class="ctext">'+c.text+'</div></div>'+(canDel?'<button class="cdel" onclick="delCmt(\''+c.id+'\',\''+rid+'\')">×</button>':'')+'</div>';
 }
-
-async function deleteCommentClick(commentId, reservationId) {
-  if(!confirm('¿Eliminar esta nota?')) return;
-  await deleteComment(commentId, reservationId);
-  if(window.innerWidth<=680) renderMobComments(commentsCache[reservationId]||[],reservationId);
-  else renderDesktopComments(commentsCache[reservationId]||[],reservationId);
+function renderCmts(cmts,rid,listId){
+  const el=document.getElementById(listId);
+  if(!el)return;
+  el.innerHTML=cmts.length?cmts.map(c=>cmtHTML(c,rid)).join(''):'<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas.</div>';
+  const sb=document.getElementById('sbComments');if(sb)sb.scrollTop=sb.scrollHeight;
+}
+async function delCmt(cid,rid){
+  if(!confirm('¿Eliminar esta nota?'))return;
+  await deleteComment(cid,rid);
+  renderCmts(cmtCache[rid]||[],rid,'commentList');
+  if(document.getElementById('mobCommentList'))renderCmts(cmtCache[rid]||[],rid,'mobCommentList');
   renderView();
 }
-
-function renderDesktopComments(cmts,resId) {
-  const list=document.getElementById('commentList');
-  list.innerHTML=cmts.length?cmts.map(c=>commentHTML(c,resId||selectedRes?.id)).join(''):`<div style="font-size:12px;color:var(--text3);padding:8px 0;">Aún no hay notas.</div>`;
-  const sb=document.getElementById('sbComments'); sb.scrollTop=sb.scrollHeight;
+async function sendComment(){
+  if(!me){openModal();return;}if(!selRes)return;
+  const inp=document.getElementById('commentInput');const txt=inp.value.trim();if(!txt)return;
+  inp.value='';inp.disabled=true;
+  try{await saveComment(selRes.id,selRes.propName,txt);renderCmts(cmtCache[selRes.id]||[],selRes.id,'commentList');renderView();}
+  catch(e){alert('Error.');}finally{inp.disabled=false;inp.focus();}
 }
 
-// ── MOBILE SHEET ──────────────────────────────────────────────────────────────
-function renderMobSheet(r,ci,co,otaBadge,cmts,asgn) {
+// MOBILE SHEET
+function renderMob(r,ci,co,ota,cmts,asgn){
   const body=document.getElementById('mobBody');
-  const isCheckout=true; // show assignment for all events in mobile (simplified)
-
-  let asgnHTML='';
-  if(asgn&&asgn.completed){
-    asgnHTML=`<div style="padding:10px 12px;background:var(--teal-l);border-radius:var(--radius);margin-bottom:8px;font-size:12px;color:var(--teal-d);font-weight:500;"><i class="ti ti-circle-check"></i> Limpieza completada por ${asgn.completed_by}</div>`;
-  } else if(asgn){
-    asgnHTML=`<div style="padding:10px 12px;background:var(--purple-l);border-radius:var(--radius);margin-bottom:8px;">
-      <div style="font-size:12px;font-weight:600;color:var(--purple);margin-bottom:4px;"><i class="ti ti-user-check"></i> ${asgn.cleaner_name} · ${asgn.scheduled_time}</div>
-      ${asgn.guest_arrival?`<div style="font-size:11px;color:var(--text2);">${asgn.guest_arrival}</div>`:''}
-      <button class="mark-done-btn" style="margin-top:6px;" onclick="markDoneClick('${asgn.id}','${r.id}');closeMobSheet()">✓ Marcar listo</button>
-    </div>`;
-  } else {
+  let asgnH='';
+  if(asgn&&asgn.completed){asgnH='<div style="padding:10px 12px;background:var(--teal-l);border-radius:var(--radius);margin-bottom:10px;font-size:12px;color:var(--teal-d);font-weight:500;"><i class="ti ti-circle-check"></i> Limpieza completada por '+asgn.completed_by+'</div>';}
+  else if(asgn){asgnH='<div style="padding:10px 12px;background:var(--purple-l);border-radius:var(--radius);margin-bottom:10px;"><div style="font-size:12px;font-weight:600;color:var(--purple);margin-bottom:4px;"><i class="ti ti-user-check"></i> '+asgn.cleaner_name+' · '+asgn.scheduled_time+'</div>'+(asgn.guest_arrival?'<div style="font-size:11px;color:var(--text2);">'+asgn.guest_arrival+'</div>':'')+'<button class="mark-done-btn" style="margin-top:6px;" onclick="markDoneClick(\''+asgn.id+'\',\''+r.id+'\');closeMob()">✓ Marcar listo</button></div>';}
+  else{
     const coDate=new Date(r.checkout+'T12:00:00').toISOString().slice(0,10);
-    asgnHTML=`<div style="background:var(--bg2);border-radius:var(--radius);padding:10px 12px;margin-bottom:8px;">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Asignar cleaner</div>
-      <select class="assign-select" id="mob-asgn-cleaner" style="width:100%;margin-bottom:6px;">
-        <option value="">Seleccionar...</option>
-        ${CLEANERS.map(c=>`<option value="${c}">${c}</option>`).join('')}
-      </select>
-      <input type="time" class="assign-input" id="mob-asgn-time" value="10:00" style="width:100%;margin-bottom:6px;">
-      <input type="text" class="assign-input" id="mob-asgn-arrival" placeholder="Llegada próx. huéspedes (opcional)" style="width:100%;margin-bottom:8px;">
-      <button class="assign-btn" style="width:100%;" onclick="saveMobAssign('${r.id}','${r.propName}','${coDate}')">Guardar asignación</button>
-    </div>`;
+    asgnH='<div style="background:var(--bg2);border-radius:var(--radius);padding:10px 12px;margin-bottom:10px;"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;margin-bottom:8px;">Asignar cleaner</div><select class="form-input" id="mClnr" style="margin-bottom:6px;"><option value="">Seleccionar...</option>'+CLEANERS.map(c=>'<option>'+c+'</option>').join('')+'</select><input type="time" class="form-input" id="mTime" value="10:00" style="margin-bottom:6px;"><input class="form-input" id="mArrival" placeholder="Llegada próx. huéspedes (opcional)" style="margin-bottom:8px;"><button class="btn-save" style="width:100%;padding:8px;" onclick="saveMobAsgn(\''+r.id+'\',\''+r.propName.replace(/'/g,"\\'")+'\',\''+coDate+'\')">Guardar asignación</button></div>';
   }
-
-  body.innerHTML=`
-    <div class="mob-prop">${r.propName}</div>
-    <div class="mob-badges"><span class="badge ci">↓ ${ci.getDate()}/${ci.getMonth()+1}</span><span class="badge co">↑ ${co.getDate()}/${co.getMonth()+1}</span>${otaBadge}</div>
-    <div class="mob-grid">
-      <div class="mob-item"><div class="mob-lbl">Check-in</div><div class="mob-val">${ci.getDate()} ${MONTHS_S[ci.getMonth()]}</div></div>
-      <div class="mob-item"><div class="mob-lbl">Check-out</div><div class="mob-val">${co.getDate()} ${MONTHS_S[co.getMonth()]}</div></div>
-      <div class="mob-item"><div class="mob-lbl">Noches</div><div class="mob-val">${r.nights}</div></div>
-      <div class="mob-item"><div class="mob-lbl">Huésped</div><div class="mob-val">${r.guest||'—'}</div></div>
-    </div>
-    ${asgnHTML}
-    <div class="mob-section">Notas del equipo</div>
-    <div id="mobCommentList">${cmts.length?cmts.map(c=>commentHTML(c,r.id)).join(''):'<div style="font-size:12px;color:var(--text3);">Aún no hay notas.</div>'}</div>
-  `;
+  body.innerHTML='<div class="mob-prop">'+r.propName+'</div><div class="mob-badges"><span class="badge ci">↓ '+ci.getDate()+'/'+(ci.getMonth()+1)+'</span><span class="badge co">↑ '+co.getDate()+'/'+(co.getMonth()+1)+'</span>'+ota+'</div><div class="mob-grid"><div class="mob-item"><div class="mob-lbl">Check-in</div><div class="mob-val">'+ci.getDate()+' '+MS2[ci.getMonth()]+'</div></div><div class="mob-item"><div class="mob-lbl">Check-out</div><div class="mob-val">'+co.getDate()+' '+MS2[co.getMonth()]+'</div></div><div class="mob-item"><div class="mob-lbl">Noches</div><div class="mob-val">'+r.nights+' noche'+(r.nights>1?'s':'')+'</div></div><div class="mob-item"><div class="mob-lbl">Huésped</div><div class="mob-val">'+(r.guest||'—')+'</div></div></div>'+asgnH+'<div class="mob-section">Notas del equipo</div><div id="mobCommentList">'+( cmts.length?cmts.map(c=>cmtHTML(c,r.id)).join(''):'<div style="font-size:12px;color:var(--text3);">Aún no hay notas.</div>')+'</div>';
   document.getElementById('mobOverlay').classList.add('open');
 }
-
-function renderMobComments(cmts,resId) {
-  const list=document.getElementById('mobCommentList');
-  if(list) list.innerHTML=cmts.length?cmts.map(c=>commentHTML(c,resId)).join(''):'<div style="font-size:12px;color:var(--text3);">Aún no hay notas.</div>';
+async function saveMobAsgn(id,propName,coDate){
+  if(!me){openModal();return;}
+  const c=document.getElementById('mClnr').value,t=document.getElementById('mTime').value,a=(document.getElementById('mArrival').value||'').trim();
+  if(!c){alert('Selecciona un cleaner.');return;}
+  await saveAssignment(id,propName,coDate,c,t,a);
+  const r=reservations.find(x=>x.id===id);
+  const ci=new Date(r.checkin+'T12:00:00'),co=new Date(r.checkout+'T12:00:00');
+  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':'<span class="badge bk">Booking</span>';
+  renderMob(r,ci,co,ota,cmtCache[id]||[],asgnCache[id]);renderView();
 }
+async function sendMobComment(){
+  if(!me){openModal();return;}if(!selRes)return;
+  const inp=document.getElementById('mobInput');const txt=inp.value.trim();if(!txt)return;
+  inp.value='';inp.disabled=true;
+  try{await saveComment(selRes.id,selRes.propName,txt);renderCmts(cmtCache[selRes.id]||[],selRes.id,'mobCommentList');renderView();}
+  catch(e){alert('Error.');}finally{inp.disabled=false;inp.focus();}
+}
+function closeMob(e){if(!e||e.target===document.getElementById('mobOverlay'))document.getElementById('mobOverlay').classList.remove('open');}
 
-async function saveMobAssign(resId,propName,coDate) {
-  if(!currentUser){openModal();return;}
-  const cleaner=document.getElementById('mob-asgn-cleaner').value;
-  const time=document.getElementById('mob-asgn-time').value;
-  const arrival=document.getElementById('mob-asgn-arrival').value.trim();
-  if(!cleaner){alert('Selecciona un cleaner.');return;}
-  await saveAssignment(resId,propName,coDate,cleaner,time,arrival);
-  const r=reservations.find(x=>x.id===resId);
-  const ci=new Date(r.checkin+'T12:00:00'), co=new Date(r.checkout+'T12:00:00');
-  const otaBadge=r.ota==='airbnb'?`<span class="badge ab">Airbnb</span>`:`<span class="badge bk">Booking</span>`;
-  renderMobSheet(r,ci,co,otaBadge,commentsCache[resId]||[],assignCache[resId]);
+// NAV
+function setTab(t,btn){
+  tab=t;customDate=null;
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
   renderView();
 }
 
-function closeMobSheet(e) {
-  if(!e||e.target===document.getElementById('mobOverlay')) document.getElementById('mobOverlay').classList.remove('open');
-}
-
-async function sendComment() {
-  if(!currentUser){openModal();return;} if(!selectedRes) return;
-  const inp=document.getElementById('commentInput'); const txt=inp.value.trim(); if(!txt) return;
-  inp.value=''; inp.disabled=true;
-  try{await saveComment(selectedRes.id,selectedRes.propName,txt);renderDesktopComments(commentsCache[selectedRes.id]||[],selectedRes.id);renderView();}
-  catch(e){alert('Error.');}
-  finally{inp.disabled=false;inp.focus();}
-}
-async function sendMobComment() {
-  if(!currentUser){openModal();return;} if(!selectedRes) return;
-  const inp=document.getElementById('mobCommentInput'); const txt=inp.value.trim(); if(!txt) return;
-  inp.value=''; inp.disabled=true;
-  try{await saveComment(selectedRes.id,selectedRes.propName,txt);renderMobComments(commentsCache[selectedRes.id]||[],selectedRes.id);renderView();}
-  catch(e){alert('Error.');}
-  finally{inp.disabled=false;inp.focus();}
-}
-
-// ── ALOJAMIENTOS VIEW ────────────────────────────────────────────────────────
-let statusCache = null;
-
-async function renderAlojamientos(forceRefresh=false) {
-  const cont = document.getElementById('viewContent');
-  document.getElementById('filtersBar').style.display = 'none';
-  const isAdmin = currentUser && currentUser.name === 'Mike B.';
-
-  // Load from Supabase
-  let props = [];
-  try {
-    props = await sbFetch('properties?active=eq.true&order=ota.asc,name.asc');
-  } catch(e) {
-    props = properties.map(p => ({id:p.id, name:p.name, ota:p.ota, ical_url:''}));
-  }
-
-  const airbnbProps = props.filter(p => p.ota === 'airbnb');
-  const bookingProps = props.filter(p => p.ota === 'booking');
-
-  const renderList = (list, statusMap) => list.map(p => {
-    const s = statusMap ? statusMap[p.id] : null;
-    const sc = !s ? 'loading' : s.ok ? 'ok' : 'error';
-    const st = !s ? 'Sin verificar' : s.ok ? `OK · ${s.events} reserva${s.events!==1?'s':''}` : 'Error';
-    const safeUrl = (p.ical_url||'').replace(/\/g,'\\').replace(/'/g,"\'");
-    const safeName = (p.name||'').replace(/'/g,"\'");
-    return `<div class="prop-item">
-      <div class="prop-status-dot ${sc}"></div>
-      <div style="flex:1;min-width:0;">
-        <div class="prop-item-name">${p.name}</div>
-        <div class="prop-item-sub">${p.ota==='airbnb'?'Airbnb':'Booking.com'}</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <div class="prop-status ${sc}">${st}</div>
-        ${isAdmin?`<button onclick="editProp('${p.id}','${safeName}','${p.ota}','${safeUrl}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:2px;" title="Editar">✏️</button>`:''}
-      </div>
-    </div>`;
-  }).join('');
-
-  const formHTML = isAdmin ? `
-    <div id="propForm" style="display:none;background:var(--bg2);border-radius:var(--radius-lg);padding:16px;margin-bottom:16px;border:0.5px solid var(--border2);">
-      <div style="font-size:13px;font-weight:600;margin-bottom:12px;" id="propFormTitle">Nueva propiedad</div>
-      <input type="hidden" id="propFormId">
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <input class="assign-input" id="propFormName" placeholder="Nombre de la propiedad" style="width:100%;">
-        <select class="assign-select" id="propFormOta" style="width:100%;">
-          <option value="airbnb">Airbnb</option>
-          <option value="booking">Booking.com</option>
-        </select>
-        <input class="assign-input" id="propFormUrl" placeholder="URL del calendario iCal..." style="width:100%;">
-        <div style="display:flex;gap:8px;">
-          <button class="assign-btn" onclick="saveProp()" style="flex:1;"><i class="ti ti-check"></i> Guardar</button>
-          <button onclick="hidePropForm()" style="flex:1;padding:7px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg);cursor:pointer;font-family:var(--font);font-size:12px;">Cancelar</button>
-        </div>
-      </div>
-    </div>` : '';
-
-  const buildHTML = (statusMap) => `<div class="prop-list">
-    <div class="prop-summary">
-      <div class="prop-summary-card">
-        <div class="prop-summary-num">${props.length}</div>
-        <div class="prop-summary-lbl">Total</div>
-      </div>
-      <div class="prop-summary-card" style="border-color:#FF5A5F44;">
-        <div class="prop-summary-num" style="color:#CC2222;">${airbnbProps.length}</div>
-        <div class="prop-summary-lbl">Airbnb</div>
-      </div>
-      <div class="prop-summary-card" style="border-color:#378ADD44;">
-        <div class="prop-summary-num" style="color:var(--blue);">${bookingProps.length}</div>
-        <div class="prop-summary-lbl">Booking</div>
-      </div>
-      ${statusMap ? (() => {
-        const errors = Object.values(statusMap).filter(s=>!s.ok).length;
-        return '<div class="prop-summary-card" style="border-color:' + (errors>0?'var(--red)':'var(--teal)') + '44;"><div class="prop-summary-num" style="color:' + (errors>0?'var(--red)':'var(--teal)') + ';">' + (errors>0?errors:'✓') + '</div><div class="prop-summary-lbl">' + (errors>0?'Con errores':'Todos OK') + '</div></div>';
-      })() : ''}
-    </div>
-    ${formHTML}
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <div class="prop-section-title"><i class="ti ti-home" style="font-size:13px;color:#CC2222;"></i>Airbnb · ${airbnbProps.length}</div>
-      <div style="display:flex;gap:8px;">
-        ${isAdmin ? '<button class="assign-btn" onclick="showAddProp()"><i class="ti ti-plus"></i> Agregar</button>' : ''}
-        <button class="sync-btn" onclick="verifyStatus()"><i class="ti ti-refresh" style="font-size:13px;"></i>Verificar</button>
-      </div>
-    </div>
-    ${renderList(airbnbProps, statusMap)}
-    <div class="prop-section-title" style="margin-top:16px;"><i class="ti ti-hotel-service" style="font-size:13px;color:var(--blue);"></i>Booking.com · ${bookingProps.length}</div>
-    ${renderList(bookingProps, statusMap)}
-  </div>`;
-
-  cont.innerHTML = buildHTML(statusCache);
-}
-
-function showAddProp() {
-  document.getElementById('propFormTitle').textContent = 'Nueva propiedad';
-  document.getElementById('propFormId').value = '';
-  document.getElementById('propFormName').value = '';
-  document.getElementById('propFormOta').value = 'airbnb';
-  document.getElementById('propFormUrl').value = '';
-  document.getElementById('propForm').style.display = 'block';
-  document.getElementById('propFormName').focus();
-  document.getElementById('propForm').scrollIntoView({behavior:'smooth'});
-}
-
-function hidePropForm() {
-  document.getElementById('propForm').style.display = 'none';
-}
-
-function editProp(id, name, ota, url) {
-  document.getElementById('propFormTitle').textContent = 'Editar propiedad';
-  document.getElementById('propFormId').value = id;
-  document.getElementById('propFormName').value = name;
-  document.getElementById('propFormOta').value = ota;
-  document.getElementById('propFormUrl').value = url;
-  document.getElementById('propForm').style.display = 'block';
-  document.getElementById('propForm').scrollIntoView({behavior:'smooth'});
-}
-
-async function saveProp() {
-  const id   = document.getElementById('propFormId').value;
-  const name = document.getElementById('propFormName').value.trim();
-  const ota  = document.getElementById('propFormOta').value;
-  const url  = document.getElementById('propFormUrl').value.trim();
-  if (!name || !url) { alert('Completa nombre y URL iCal.'); return; }
-  try {
-    if (id) {
-      await sbFetch('properties?id=eq.'+id, {method:'PATCH', body:JSON.stringify({name, ota, ical_url:url})});
-    } else {
-      const newId = 'p' + Date.now();
-      await sbFetch('properties', {method:'POST', body:JSON.stringify({id:newId, name, ota, ical_url:url, active:true})});
-    }
-    await fetch(BACKEND_URL+'/invalidate', {method:'POST'}).catch(()=>{});
-    statusCache = null;
-    hidePropForm();
-    await renderAlojamientos(false);
-    loadData();
-  } catch(e) { alert('Error: '+e.message); }
-}
-
-
-async function verifyStatus() {
-  try {
-    const res = await fetch(BACKEND_URL+'/status');
-    const data = await res.json();
-    statusCache = {};
-    data.results.forEach(r => { statusCache[r.id] = r; });
-  } catch(e) { statusCache = {}; }
-  await renderAlojamientos(false);
-}
-
-// ── NAV ───────────────────────────────────────────────────────────────────────
-function switchTab(tab,btn) {
-  activeTab=tab; customDate=null;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  if(tab==='alojamientos') renderAlojamientos(false);
-  else renderView();
-}
-
-// ── USER ──────────────────────────────────────────────────────────────────────
-function buildUserOptions() {
-  document.getElementById('userOptions').innerHTML=TEAM.map(u=>
-    `<div class="uoption" onclick="selectUser('${u.name}')">
-      <div class="cav" style="background:${u.bg};color:${u.color};">${u.name.slice(0,2).toUpperCase()}</div>
-      <div><div class="uname">${u.name}</div><div class="urole">${u.role}</div></div>
-    </div>`).join('');
+// USER
+function buildUserOptions(){
+  document.getElementById('userOptions').innerHTML=TEAM.map(u=>'<div class="uoption" onclick="selectUser(\''+u.name+'\')"><div class="cav" style="background:'+u.bg+';color:'+u.color+';">'+u.name.slice(0,2).toUpperCase()+'</div><div><div class="uname">'+u.name+'</div><div class="urole">'+u.role+'</div></div></div>').join('');
 }
 function openModal(){document.getElementById('userModal').style.display='flex';}
 function selectUser(name){
   const u=TEAM.find(t=>t.name===name)||{name,role:'Equipo',color:'var(--teal-d)',bg:'var(--teal-l)'};
-  currentUser=u;
+  me=u;
   const av=document.getElementById('topAv');
   av.textContent=name.slice(0,2).toUpperCase();av.style.background=u.bg;av.style.color=u.color;
   document.getElementById('topName').textContent=name;
@@ -1091,9 +764,9 @@ function addUser(){
   buildUserOptions();selectUser(n);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+// INIT
 document.getElementById('commentInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendComment();}});
-document.getElementById('mobCommentInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMobComment();}});
+document.getElementById('mobInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMobComment();}});
 buildUserOptions();
 loadData();
 </script>
