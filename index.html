@@ -993,7 +993,13 @@ function renderSidebar(r,ci,co,ota,cmts,asgn){
   document.getElementById('sbEmpty').style.display='none';
   document.getElementById('sbContent').style.display='flex';
   document.getElementById('sbProp').textContent=r.propName;
-  document.getElementById('sbBadges').innerHTML='<span class="badge ci">↓ '+ci.getDate()+'/'+(ci.getMonth()+1)+'</span><span class="badge co">↑ '+co.getDate()+'/'+(co.getMonth()+1)+'</span>'+ota;
+  // Show edit/delete buttons for manual reservations
+  const manualActions = r.ota==='manual' ?
+    '<div style="display:flex;gap:6px;margin-top:8px;">'+
+    '<button onclick="editManualReservation(\''+r.id+'\');" style="flex:1;padding:6px 10px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:12px;cursor:pointer;font-family:var(--font);">✏️ Editar</button>'+
+    '<button onclick="deleteManualReservation(\''+r.id+'\',\''+r.propName.replace(/\'/g,\"\\\'\")+'\')" style="flex:1;padding:6px 10px;border:0.5px solid var(--red);border-radius:var(--radius);background:var(--red-l);color:var(--red-d);font-size:12px;cursor:pointer;font-family:var(--font);">🗑️ Eliminar</button>'+
+    '</div>' : '';
+  document.getElementById('sbBadges').innerHTML='<span class="badge ci">↓ '+ci.getDate()+'/'+(ci.getMonth()+1)+'</span><span class="badge co">↑ '+co.getDate()+'/'+(co.getMonth()+1)+'</span>'+ota+manualActions;
   document.getElementById('sbCi').textContent=ci.getDate()+' '+MS2[ci.getMonth()];
   document.getElementById('sbCo').textContent=co.getDate()+' '+MS2[co.getMonth()];
   document.getElementById('sbNights').textContent=r.nights+' noche'+(r.nights>1?'s':'');
@@ -1057,7 +1063,13 @@ async function sendComment(){
 // ── MOBILE SHEET ──────────────────────────────────────────────────────────────
 function renderMob(r,ci,co,ota,cmts,asgn){
   const body=document.getElementById('mobBody');
-  let asgnH='';
+  // Edit/delete buttons for manual reservations on mobile
+  const mobManualActions = r.ota==='manual' ?
+    '<div style="display:flex;gap:8px;margin-bottom:12px;">'+
+    '<button onclick="editManualReservation(\''+r.id+'\');closeMob();" style="flex:1;padding:8px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:13px;cursor:pointer;font-family:var(--font);">✏️ Editar</button>'+
+    '<button onclick="deleteManualReservation(\''+r.id+'\',\''+r.propName+'\');closeMob();" style="flex:1;padding:8px;border:0.5px solid var(--red);border-radius:var(--radius);background:var(--red-l);color:var(--red-d);font-size:13px;cursor:pointer;font-family:var(--font);">🗑️ Eliminar</button>'+
+    '</div>' : '';
+  let asgnH=mobManualActions;
   if(asgn&&asgn.completed){asgnH='<div style="padding:10px 12px;background:var(--teal-l);border-radius:var(--radius);margin-bottom:10px;font-size:12px;color:var(--teal-d);font-weight:500;"><i class="ti ti-circle-check"></i> Limpieza completada por '+asgn.completed_by+'</div>';}
   else if(asgn){asgnH='<div style="padding:10px 12px;background:var(--purple-l);border-radius:var(--radius);margin-bottom:10px;"><div style="font-size:12px;font-weight:600;color:var(--purple);"><i class="ti ti-user-check"></i> '+asgn.cleaner_name+' · '+asgn.scheduled_time+'</div>'+(asgn.guest_arrival?'<div style="font-size:11px;color:var(--text2);margin-top:4px;">'+asgn.guest_arrival+'</div>':'')+'<button class="mark-done-btn" style="margin-top:6px;width:100%;" onclick="markDoneClick(\''+asgn.id+'\',\''+r.id+'\');closeMob()">✓ Marcar listo</button></div>';}
   else{
