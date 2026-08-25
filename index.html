@@ -1092,7 +1092,7 @@ function closeMob(e){if(!e||e.target===document.getElementById('mobOverlay'))doc
 async function openManualModal(id, defaultDate){
   // Populate property selector
   const sel = document.getElementById('manualProp');
-  sel.innerHTML = properties.map(p=>'<option value="'+p.id+'|'+encodeURIComponent(p.name)+'">'+p.name+' ('+( p.ota==='airbnb'?'Airbnb':'Booking')+')</option>').join('');
+  sel.innerHTML = '<option value="">Selecciona una propiedad...</option>'+properties.map(p=>'<option value="'+p.id+'|'+encodeURIComponent(p.name)+'">'+p.name+'</option>').join('');
 
   if(id){
     // Edit mode
