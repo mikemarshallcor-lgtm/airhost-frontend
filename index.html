@@ -299,6 +299,18 @@
     .mob-section{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin:14px 0 8px;}
     .mob-input{padding:12px 16px;border-top:0.5px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-shrink:0;}
 
+    /* MANUAL RESERVATIONS */
+    .badge.manual{background:#FFF8E1;color:#F57F17;}
+    .manual-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;}
+    .manual-modal-overlay.open{display:flex;}
+    .manual-modal{background:var(--bg);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:420px;margin:16px;box-shadow:0 8px 32px rgba(0,0,0,0.2);}
+    .manual-modal-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+    .manual-modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);line-height:1;}
+    .manual-field{margin-bottom:12px;}
+    .manual-field label{display:block;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+    .manual-add-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--amber-l);color:var(--amber);border:1.5px solid var(--amber);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);}
+    .manual-add-btn:hover{background:var(--amber);color:#fff;}
+
     .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text2);font-size:13px;text-align:center;padding:20px;}
     .spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
@@ -322,6 +334,43 @@
 <body>
 <div id="loginScreen"></div>
 <div class="app" id="mainApp" style="display:none;">
+
+  <!-- MANUAL RESERVATION MODAL -->
+  <div class="manual-modal-overlay" id="manualModal" onclick="if(event.target===this)closeManualModal()">
+    <div class="manual-modal">
+      <div class="manual-modal-title">
+        <span id="manualModalTitle">Nueva reserva directa</span>
+        <button class="manual-modal-close" onclick="closeManualModal()">×</button>
+      </div>
+      <input type="hidden" id="manualId">
+      <div class="manual-field">
+        <label>Propiedad</label>
+        <select class="form-input" id="manualProp" style="margin-bottom:0;"></select>
+      </div>
+      <div class="manual-field">
+        <label>Nombre del huésped</label>
+        <input class="form-input" id="manualGuest" placeholder="Huésped directo" style="margin-bottom:0;">
+      </div>
+      <div class="manual-field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label>Check-in</label>
+          <input type="date" class="form-input" id="manualCi" style="margin-bottom:0;">
+        </div>
+        <div>
+          <label>Check-out</label>
+          <input type="date" class="form-input" id="manualCo" style="margin-bottom:0;">
+        </div>
+      </div>
+      <div class="manual-field">
+        <label>Notas (opcional)</label>
+        <textarea class="form-input" id="manualNotes" rows="2" placeholder="Observaciones..." style="margin-bottom:0;resize:none;"></textarea>
+      </div>
+      <div class="form-row" style="margin-top:4px;">
+        <button class="btn-save" onclick="saveManualReservation()">Guardar reserva</button>
+        <button class="btn-cancel" onclick="closeManualModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <div class="mob-overlay" id="mobOverlay" onclick="closeMob(event)">
     <div class="mob-sheet">
@@ -414,7 +463,7 @@ const COLORS=[
 function colorFor(name){let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))%COLORS.length;return COLORS[h];}
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let me=null, reservations=[], properties=[], tab='hoy', selRes=null;
+let me=null, reservations=[], manualReservations=[], properties=[], tab='hoy', selRes=null;
 let cmtCache={}, asgnCache={}, statusCache=null;
 let calM=new Date().getMonth(), calY=new Date().getFullYear();
 let wkOff=0, customDate=null;
@@ -553,6 +602,18 @@ function buildTabs(){
 }
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
+async function loadManualReservations(){
+  try{
+    const rows=await sbFetch('manual_reservations?active=eq.true&order=checkin.asc');
+    manualReservations=rows.map(r=>({
+      id:r.id, propId:r.prop_id, propName:r.prop_name,
+      ota:'manual', guest:r.guest||'Huésped directo',
+      checkin:r.checkin, checkout:r.checkout, nights:r.nights,
+      notes:r.notes, createdBy:r.created_by
+    }));
+  }catch(e){ manualReservations=[]; }
+}
+
 async function loadData(){
   try{
     const res=await fetch(BACKEND_URL+'/reservations');
@@ -560,6 +621,7 @@ async function loadData(){
     reservations=data.reservations||[];
     properties=data.properties||[];
     document.getElementById('propBadge').textContent=properties.length+' props';
+    await loadManualReservations();
     updateCounts();renderView();
   }catch(e){
     document.getElementById('viewContent').innerHTML='<div class="loading-wrap" style="color:#D94040;"><i class="ti ti-alert-circle" style="font-size:36px;"></i><span>Error al conectar.<br><small>Render puede estar iniciando. Espera 30s y recarga.</small></span></div>';
@@ -568,7 +630,7 @@ async function loadData(){
 
 function eventsForDate(date){
   const ds=date.toDateString();
-  return reservations.filter(r=>{
+  const fromBackend=reservations.filter(r=>{
     if(!fAB&&r.ota==='airbnb')return false;
     if(!fBK&&r.ota==='booking')return false;
     const ci=new Date(r.checkin+'T12:00:00').toDateString()===ds;
@@ -577,6 +639,14 @@ function eventsForDate(date){
     if(!fCO&&co&&!ci)return false;
     return ci||co;
   }).map(r=>({...r,isCi:new Date(r.checkin+'T12:00:00').toDateString()===ds,isCo:new Date(r.checkout+'T12:00:00').toDateString()===ds}));
+  const fromManual=manualReservations.filter(r=>{
+    const ci=new Date(r.checkin+'T12:00:00').toDateString()===ds;
+    const co=new Date(r.checkout+'T12:00:00').toDateString()===ds;
+    if(!fCI&&ci&&!co)return false;
+    if(!fCO&&co&&!ci)return false;
+    return ci||co;
+  }).map(r=>({...r,isCi:new Date(r.checkin+'T12:00:00').toDateString()===ds,isCo:new Date(r.checkout+'T12:00:00').toDateString()===ds}));
+  return [...fromBackend,...fromManual];
 }
 
 function updateCounts(){
@@ -616,15 +686,16 @@ function renderDay(date,title){
   const cis=evts.filter(e=>e.isCi),cos=evts.filter(e=>e.isCo);
   const cont=document.getElementById('viewContent');
   const back=customDate?'<button onclick="customDate=null;renderWeek();" style="display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--teal);font-size:13px;cursor:pointer;padding:0;margin-bottom:12px;font-family:var(--font);"><i class="ti ti-arrow-left"></i> Semana</button>':'';
-  if(!evts.length){cont.innerHTML='<div class="day-view">'+back+'<div class="day-header"><div class="day-title">'+title+'</div><div class="day-sub">'+dLabel(date)+'</div></div><div class="empty-day"><i class="ti ti-coffee"></i><p>Sin movimientos</p><small>No hay check-ins ni check-outs '+(title==='Hoy'?'hoy':title==='Mañana'?'mañana':'este día')+'</small></div></div>';return;}
-  let h='<div class="day-view">'+back+'<div class="day-header"><div class="day-title">'+title+'</div><div class="day-sub">'+dLabel(date)+'</div></div>';
+  if(!evts.length){cont.innerHTML='<div class="day-view">'+back+'<div class="day-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;"><div><div class="day-title">'+title+'</div><div class="day-sub">'+dLabel(date)+'</div></div><button class="manual-add-btn" onclick="openManualModal(null,\''+date.toISOString().slice(0,10)+'\')" ><i class="ti ti-plus"></i> Reserva directa</button></div><div class="empty-day"><i class="ti ti-coffee"></i><p>Sin movimientos</p><small>No hay check-ins ni check-outs '+(title==='Hoy'?'hoy':title==='Mañana'?'mañana':'este día')+'</small></div></div>';return;}
+  const manualBtn='<button class="manual-add-btn" onclick="openManualModal(null,\''+date.toISOString().slice(0,10)+'\')" style="margin-left:auto;"><i class="ti ti-plus"></i> Reserva directa</button>';
+  let h='<div class="day-view">'+back+'<div class="day-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;"><div><div class="day-title">'+title+'</div><div class="day-sub">'+dLabel(date)+'</div></div>'+manualBtn+'</div>';
   if(cis.length){h+='<div class="section-label ci"><i class="ti ti-arrow-down-circle"></i>Check-ins · '+cis.length+'</div>';cis.forEach(r=>{h+=cardHTML(r,'ci');});}
   if(cos.length){h+='<div class="section-label co"><i class="ti ti-arrow-up-circle"></i>Check-outs · '+cos.length+'</div>';cos.forEach(r=>{h+=cardHTML(r,'co');});}
   h+='</div>';cont.innerHTML=h;
 }
 
 function cardHTML(r,type){
-  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':'<span class="badge bk">Booking</span>';
+  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':r.ota==='booking'?'<span class="badge bk">Booking</span>':'<span class="badge manual">Directo</span>';
   const typ=type==='ci'?'<span class="badge ci">↓ Check-in</span>':'<span class="badge co">↑ Check-out</span>';
   const ci=new Date(r.checkin+'T12:00:00'),co=new Date(r.checkout+'T12:00:00');
   const hasC=(cmtCache[r.id]||[]).length>0;
@@ -636,6 +707,11 @@ function cardHTML(r,type){
     if(hasC)foot+='<span class="res-card-note"><i class="ti ti-message-circle"></i>'+(cmtCache[r.id]||[]).length+' nota'+(cmtCache[r.id].length>1?'s':'')+'</span>';
     foot+='</div>';
   }
+  const manualBtns=r.ota==='manual'?
+    '<div style="display:flex;gap:8px;margin-top:10px;padding-top:8px;border-top:0.5px solid var(--border);">'+
+    '<button onclick="event.stopPropagation();editManualReservation(\''+r.id+'\')" style="flex:1;padding:6px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);font-size:12px;cursor:pointer;font-family:var(--font);">✏️ Editar</button>'+
+    '<button onclick="event.stopPropagation();deleteManualReservation(\''+r.id+'\',\''+r.propName+'\')" style="flex:1;padding:6px;border:0.5px solid var(--red);border-radius:var(--radius);background:var(--red-l);color:var(--red-d);font-size:12px;cursor:pointer;font-family:var(--font);">🗑️ Eliminar</button>'+
+    '</div>':'';
   return '<div class="res-card '+type+'" onclick="openEvent(\''+r.id+'\')"><div class="res-card-top"><div class="res-card-prop">'+r.propName+'</div><div class="res-card-badges">'+typ+ota+'</div></div><div class="res-card-grid"><div class="res-card-item"><div class="res-card-lbl">Check-in</div><div class="res-card-val">'+ci.getDate()+' '+MS2[ci.getMonth()]+'</div></div><div class="res-card-item"><div class="res-card-lbl">Check-out</div><div class="res-card-val">'+co.getDate()+' '+MS2[co.getMonth()]+'</div></div><div class="res-card-item"><div class="res-card-lbl">Noches</div><div class="res-card-val">'+r.nights+'</div></div><div class="res-card-item"><div class="res-card-lbl">Huésped</div><div class="res-card-val">'+(r.guest||'—')+'</div></div></div>'+foot+'</div>';
 }
 
@@ -906,7 +982,7 @@ async function openEvent(id){
   selRes=reservations.find(r=>r.id===id);if(!selRes)return;
   const r=selRes;
   const ci=new Date(r.checkin+'T12:00:00'),co=new Date(r.checkout+'T12:00:00');
-  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':'<span class="badge bk">Booking</span>';
+  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':r.ota==='booking'?'<span class="badge bk">Booking</span>':'<span class="badge manual">Directo</span>';
   const[cmts,asgn]=await Promise.all([loadComments(r.id),loadAssignment(r.id)]);
   if(window.innerWidth<=680){renderMob(r,ci,co,ota,cmts,asgn);}
   else{renderSidebar(r,ci,co,ota,cmts,asgn);}
@@ -999,7 +1075,7 @@ async function saveMobAsgn(id,propName,coDate){
   await saveAssignment(id,propName,coDate,c,t,a);
   const r=reservations.find(x=>x.id===id);
   const ci=new Date(r.checkin+'T12:00:00'),co=new Date(r.checkout+'T12:00:00');
-  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':'<span class="badge bk">Booking</span>';
+  const ota=r.ota==='airbnb'?'<span class="badge ab">Airbnb</span>':r.ota==='booking'?'<span class="badge bk">Booking</span>':'<span class="badge manual">Directo</span>';
   renderMob(r,ci,co,ota,cmtCache[id]||[],asgnCache[id]);renderView();
 }
 async function sendMobComment(){
@@ -1010,6 +1086,107 @@ async function sendMobComment(){
   catch(e){alert('Error.');}finally{inp.disabled=false;inp.focus();}
 }
 function closeMob(e){if(!e||e.target===document.getElementById('mobOverlay'))document.getElementById('mobOverlay').classList.remove('open');}
+
+
+// ── MANUAL RESERVATIONS ───────────────────────────────────────────────────────
+async function openManualModal(id, defaultDate){
+  // Populate property selector
+  const sel = document.getElementById('manualProp');
+  sel.innerHTML = properties.map(p=>'<option value="'+p.id+'|'+encodeURIComponent(p.name)+'">'+p.name+' ('+( p.ota==='airbnb'?'Airbnb':'Booking')+')</option>').join('');
+
+  if(id){
+    // Edit mode
+    const r = manualReservations.find(x=>x.id===id);
+    if(!r) return;
+    document.getElementById('manualModalTitle').textContent = 'Editar reserva directa';
+    document.getElementById('manualId').value = id;
+    // Select the property
+    const optVal = r.propId+'|'+encodeURIComponent(r.propName);
+    if([...sel.options].some(o=>o.value===optVal)) sel.value=optVal;
+    document.getElementById('manualGuest').value = r.guest || '';
+    document.getElementById('manualCi').value = r.checkin;
+    document.getElementById('manualCo').value = r.checkout;
+    document.getElementById('manualNotes').value = r.notes || '';
+  } else {
+    // New mode
+    document.getElementById('manualModalTitle').textContent = 'Nueva reserva directa';
+    document.getElementById('manualId').value = '';
+    document.getElementById('manualGuest').value = '';
+    document.getElementById('manualCi').value = defaultDate || new Date().toISOString().slice(0,10);
+    document.getElementById('manualCo').value = '';
+    document.getElementById('manualNotes').value = '';
+  }
+  document.getElementById('manualModal').classList.add('open');
+}
+
+function closeManualModal(){
+  document.getElementById('manualModal').classList.remove('open');
+}
+
+async function saveManualReservation(){
+  const id = document.getElementById('manualId').value;
+  const propVal = document.getElementById('manualProp').value;
+  const guest = document.getElementById('manualGuest').value.trim() || 'Huésped directo';
+  const ci = document.getElementById('manualCi').value;
+  const co = document.getElementById('manualCo').value;
+  const notes = document.getElementById('manualNotes').value.trim();
+
+  if(!propVal){alert('Selecciona una propiedad.');return;}
+  if(!ci||!co){alert('Ingresa las fechas de check-in y check-out.');return;}
+  if(co<=ci){alert('El check-out debe ser posterior al check-in.');return;}
+
+  const [propId, propNameEnc] = propVal.split('|');
+  const propName = decodeURIComponent(propNameEnc);
+  const nights = Math.round((new Date(co)-new Date(ci))/(1000*60*60*24));
+
+  const saveBtn = document.querySelector('.manual-modal .btn-save');
+  saveBtn.textContent = 'Guardando...'; saveBtn.disabled = true;
+
+  try{
+    if(id){
+      await sbFetch('manual_reservations?id=eq.'+id, {method:'PATCH', body:JSON.stringify({prop_id:propId,prop_name:propName,guest,checkin:ci,checkout:co,nights,notes:notes||null})});
+    } else {
+      await sbFetch('manual_reservations', {method:'POST', body:JSON.stringify({prop_id:propId,prop_name:propName,guest,checkin:ci,checkout:co,nights,notes:notes||null,created_by:me.name,active:true})});
+    }
+    closeManualModal();
+    await loadManualReservations();
+    updateCounts();
+    renderView();
+  } catch(e){
+    alert('Error al guardar: '+e.message);
+    saveBtn.textContent='Guardar reserva'; saveBtn.disabled=false;
+  }
+}
+
+async function editManualReservation(id){
+  await openManualModal(id, null);
+}
+
+async function deleteManualReservation(id, propName){
+  if(!confirm('Eliminar reserva directa de "'+propName+'"?')) return;
+  try{
+    await sbFetch('manual_reservations?id=eq.'+id, {method:'PATCH', body:JSON.stringify({active:false})});
+    await loadManualReservations();
+    updateCounts();
+    renderView();
+  } catch(e){ alert('Error: '+e.message); }
+}
+
+// Also handle openEvent for manual reservations (no iCal data, open sidebar directly)
+const _origOpenEvent = openEvent;
+window.openEvent = async function(id){
+  const manualRes = manualReservations.find(r=>r.id===id);
+  if(manualRes){
+    selRes = manualRes;
+    const ci=new Date(manualRes.checkin+'T12:00:00'), co=new Date(manualRes.checkout+'T12:00:00');
+    const otaBadge='<span class="badge manual">Directo</span>';
+    const [cmts] = await Promise.all([loadComments(manualRes.id)]);
+    if(window.innerWidth<=680){ renderMob(manualRes,ci,co,otaBadge,cmts,null); }
+    else { renderSidebar(manualRes,ci,co,otaBadge,cmts,null); }
+    return;
+  }
+  return _origOpenEvent(id);
+};
 
 // ── NAV ───────────────────────────────────────────────────────────────────────
 function setTab(t,btn){
