@@ -708,9 +708,20 @@ async function renderAloj(){
   const propRow=p=>{
     const s=statusCache?statusCache[p.id]:null;
     const sc=!s?'loading':s.ok?'ok':'error';
-    const st=!s?'Sin verificar':s.ok?'OK · '+s.events+' reserva'+(s.events!==1?'s':''):'Error';
-    const safeUrl=(p.ical_url||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    return '<div class="prop-item"><div class="prop-dot '+sc+'"></div><div style="flex:1;min-width:0;"><div class="prop-item-name">'+p.name+'</div><div class="prop-item-sub">'+(p.ota==='airbnb'?'Airbnb':'Booking.com')+'</div></div><div style="display:flex;align-items:center;gap:6px;"><div class="prop-status '+sc+'">'+st+'</div><button onclick="editProp(\''+p.id+'\',\''+p.name.replace(/'/g,"\\'")+'\',\''+p.ota+'\',\''+safeUrl+'\')" style="background:none;border:none;cursor:pointer;font-size:13px;">✏️</button><button onclick="deleteProp('"+p.id+"','"+p.name+"')" style="background:none;border:none;cursor:pointer;font-size:14px;color:#D94040;padding:2px 4px;" title="Eliminar"><i class=\"ti ti-trash\"></i></button></div></div>';
+    const st=!s?'Sin verificar':s.ok?'OK '+s.events+' reserva'+(s.events!==1?'s':''):'Error';
+    const pid=p.id, pname=p.name, pota=p.ota, purl=(p.ical_url||'');
+    let row='<div class="prop-item">';
+    row+='<div class="prop-dot '+sc+'"></div>';
+    row+='<div style="flex:1;min-width:0;">';
+    row+='<div class="prop-item-name">'+pname+'</div>';
+    row+='<div class="prop-item-sub">'+(pota==='airbnb'?'Airbnb':'Booking.com')+'</div>';
+    row+='</div>';
+    row+='<div style="display:flex;align-items:center;gap:6px;">';
+    row+='<div class="prop-status '+sc+'">'+st+'</div>';
+    row+='<button onclick="editPropById(this)" data-id="'+pid+'" data-name="'+encodeURIComponent(pname)+'" data-ota="'+pota+'" data-url="'+encodeURIComponent(purl)+'" style="background:none;border:none;cursor:pointer;font-size:13px;" title="Editar">✏️</button>';
+    row+='<button onclick="deletePropById(this)" data-id="'+pid+'" data-name="'+encodeURIComponent(pname)+'" style="background:none;border:none;cursor:pointer;font-size:13px;color:#D94040;" title="Eliminar">🗑️</button>';
+    row+='</div></div>';
+    return row;
   };
   cont.innerHTML='<div class="prop-list"><div class="prop-summary"><div class="prop-summary-card"><div class="prop-summary-num">'+props.length+'</div><div class="prop-summary-lbl">Total</div></div><div class="prop-summary-card" style="border-color:#FF5A5F44;"><div class="prop-summary-num" style="color:#CC2222;">'+ab.length+'</div><div class="prop-summary-lbl">Airbnb</div></div><div class="prop-summary-card" style="border-color:#378ADD44;"><div class="prop-summary-num" style="color:var(--blue);">'+bk.length+'</div><div class="prop-summary-lbl">Booking</div></div></div><div id="propForm" style="display:none;" class="prop-form"><div class="prop-form-title" id="propFormTitle">Nueva propiedad</div><input type="hidden" id="pfId"><input class="form-input" id="pfName" placeholder="Nombre de la propiedad"><select class="form-input" id="pfOta"><option value="airbnb">Airbnb</option><option value="booking">Booking.com</option></select><input class="form-input" id="pfUrl" placeholder="URL del calendario iCal..."><div class="form-row"><button class="btn-save" onclick="saveProp()">Guardar</button><button class="btn-cancel" onclick="document.getElementById(\'propForm\').style.display=\'none\'">Cancelar</button></div></div><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div class="prop-section-title"><i class="ti ti-home" style="font-size:13px;color:#CC2222;"></i>Airbnb · '+ab.length+'</div><div style="display:flex;gap:8px;"><button class="add-btn" onclick="showPropForm()"><i class="ti ti-plus"></i> Agregar</button><button class="sync-btn" onclick="verifyProps()"><i class="ti ti-refresh" style="font-size:13px;"></i>Verificar</button></div></div>'+ab.map(propRow).join('')+'<div class="prop-section-title" style="margin-top:16px;"><i class="ti ti-hotel-service" style="font-size:13px;color:var(--blue);"></i>Booking.com · '+bk.length+'</div>'+bk.map(propRow).join('')+'</div>';
 }
@@ -719,6 +730,15 @@ function showPropForm(){
   document.getElementById('pfId').value='';document.getElementById('pfName').value='';
   document.getElementById('pfOta').value='airbnb';document.getElementById('pfUrl').value='';
   document.getElementById('propForm').style.display='block';document.getElementById('pfName').focus();
+}
+function editPropById(btn){
+  const id=btn.dataset.id, name=decodeURIComponent(btn.dataset.name||'');
+  const ota=btn.dataset.ota, url=decodeURIComponent(btn.dataset.url||'');
+  editProp(id,name,ota,url);
+}
+function deletePropById(btn){
+  const id=btn.dataset.id, name=decodeURIComponent(btn.dataset.name||'');
+  deleteProp(id,name);
 }
 async function deleteProp(id,name){
   if(!confirm('Eliminar "'+name+'"? Esta accion no se puede deshacer.'))return;
