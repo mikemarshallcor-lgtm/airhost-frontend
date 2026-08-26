@@ -303,7 +303,7 @@
     .badge.manual{background:#FFF8E1;color:#F57F17;}
     .manual-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;}
     .manual-modal-overlay.open{display:flex;}
-    .manual-modal{background:var(--bg);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:420px;margin:16px;box-shadow:0 8px 32px rgba(0,0,0,0.2);}
+    .manual-modal{background:var(--bg);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:420px;margin:16px;box-shadow:0 8px 32px rgba(0,0,0,0.2);max-height:90dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
     .manual-modal-title{font-size:16px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
     .manual-modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);line-height:1;}
     .manual-field{margin-bottom:12px;}
@@ -311,6 +311,12 @@
     .manual-add-btn{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--amber-l);color:var(--amber);border:1.5px solid var(--amber);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);}
     .manual-add-btn:hover{background:var(--amber);color:#fff;}
 
+
+    @media(max-width:680px){
+      .manual-modal-overlay{align-items:flex-end;}
+      .manual-modal{margin:0;border-radius:18px 18px 0 0;max-width:100%;padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom));}
+      .manual-field>div{grid-template-columns:1fr!important;}
+    }
     .loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--text2);font-size:13px;text-align:center;padding:20px;}
     .spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.8s linear infinite;}
     @keyframes spin{to{transform:rotate(360deg);}}
@@ -1102,9 +1108,17 @@ function closeMob(e){if(!e||e.target===document.getElementById('mobOverlay'))doc
 
 // ── MANUAL RESERVATIONS ───────────────────────────────────────────────────────
 async function openManualModal(id, defaultDate){
-  // Populate property selector
+  // Populate property selector - load from Supabase if backend props not ready
   const sel = document.getElementById('manualProp');
-  sel.innerHTML = '<option value="">Selecciona una propiedad...</option>'+properties.map(p=>'<option value="'+p.id+'|'+encodeURIComponent(p.name)+'">'+p.name+'</option>').join('');
+  sel.innerHTML = '<option value="">Cargando...</option>';
+  let propList = properties.length > 0 ? properties : [];
+  if(!propList.length){
+    try{
+      const rows = await sbFetch('properties?active=eq.true&order=name.asc');
+      propList = rows.map(r=>({id:r.id, name:r.name, ota:r.ota}));
+    }catch(e){ propList = []; }
+  }
+  sel.innerHTML = '<option value="">Selecciona una propiedad...</option>'+propList.map(p=>'<option value="'+p.id+'|'+encodeURIComponent(p.name)+'">'+p.name+'</option>').join('');
 
   if(id){
     // Edit mode
@@ -1143,28 +1157,35 @@ async function saveManualReservation(){
   const co = document.getElementById('manualCo').value;
   const notes = document.getElementById('manualNotes').value.trim();
 
-  if(!propVal){alert('Selecciona una propiedad.');return;}
+  if(!propVal||!propVal.includes('|')){alert('Selecciona una propiedad de la lista.');return;}
   if(!ci||!co){alert('Ingresa las fechas de check-in y check-out.');return;}
   if(co<=ci){alert('El check-out debe ser posterior al check-in.');return;}
 
-  const [propId, propNameEnc] = propVal.split('|');
-  const propName = decodeURIComponent(propNameEnc);
+  const parts = propVal.split('|');
+  const propId = parts[0];
+  const propName = parts.length > 1 ? decodeURIComponent(parts[1]) : propVal;
   const nights = Math.round((new Date(co)-new Date(ci))/(1000*60*60*24));
 
   const saveBtn = document.querySelector('.manual-modal .btn-save');
   saveBtn.textContent = 'Guardando...'; saveBtn.disabled = true;
 
   try{
+    // Debug: log what we're sending
+    console.log('Saving manual reservation:', {propId,propName,guest,ci,co,nights});
+    const payload = {prop_id:propId, prop_name:propName, guest, checkin:ci, checkout:co, nights, notes:notes||null};
     if(id){
-      await sbFetch('manual_reservations?id=eq.'+id, {method:'PATCH', body:JSON.stringify({prop_id:propId,prop_name:propName,guest,checkin:ci,checkout:co,nights,notes:notes||null})});
+      await sbFetch('manual_reservations?id=eq.'+id, {method:'PATCH', body:JSON.stringify(payload)});
     } else {
-      await sbFetch('manual_reservations', {method:'POST', body:JSON.stringify({prop_id:propId,prop_name:propName,guest,checkin:ci,checkout:co,nights,notes:notes||null,created_by:me.name,active:true})});
+      payload.created_by = me ? me.name : 'Equipo';
+      payload.active = true;
+      await sbFetch('manual_reservations', {method:'POST', body:JSON.stringify(payload)});
     }
     closeManualModal();
     await loadManualReservations();
     updateCounts();
     renderView();
   } catch(e){
+    console.error('Save error:', e);
     alert('Error al guardar: '+e.message);
     saveBtn.textContent='Guardar reserva'; saveBtn.disabled=false;
   }
